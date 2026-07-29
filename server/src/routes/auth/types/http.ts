@@ -1,12 +1,9 @@
 export type ApiAuthProvider =
-  | 'Credentials'
-  | 'Google'
-  | 'Facebook'
-  | 'Microsoft'
+  'Credentials' | 'Google' | 'Facebook' | 'Microsoft'
 
 export type ApiUserStatus = 'Active' | 'Pending' | 'Suspended'
 
-export type PublicUserResponse = {
+export type UserDto = {
   id: string
   displayName: string
   email: string
@@ -17,37 +14,4 @@ export type PublicUserResponse = {
 
 export type ErrorResponse = {
   error: string
-}
-
-export type RegisterRequestBody = {
-  displayName: string
-  email: string
-  password: string
-}
-
-export type RegisterResponseBody = {
-  user: PublicUserResponse
-  sessionToken: string
-}
-
-export type LoginRequestBody = {
-  email: string
-  password: string
-}
-
-export type LoginResponseBody = {
-  user: PublicUserResponse
-  sessionToken: string
-}
-
-export type LogoutRequestBody = {
-  sessionToken?: string
-}
-
-export type LogoutResponseBody = {
-  success: true
-}
-
-export type MeResponseBody = {
-  user: PublicUserResponse
 }

@@ -3,22 +3,21 @@ import {
   createSessionToken,
   hashSessionToken,
   verifyPassword,
-} from '../../../lib/auth'
-import { prisma } from '../../../lib/prisma'
-import type { LoginRequestBody, LoginResponseBody } from '../types/http'
-import { normalizeEmail, toPublicUser } from './authShared'
-import { AuthServiceError } from './errors'
+} from '../../../../lib/auth'
+import { prisma } from '../../../../lib/prisma'
+import { normalizeEmail, toUserDto } from '../authShared'
+import { AuthServiceError } from '../errors'
+import type { LoginArgs, LoginResult } from './types'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
-export async function loginUser(params: {
-  body: Partial<LoginRequestBody>
-  ipAddress: string | null
-  userAgent: string | null
-}): Promise<{ result: LoginResponseBody; logMeta: Record<string, unknown> }> {
+export async function loginUser(params: LoginArgs) {
   const email =
-    typeof params.body.email === 'string' ? normalizeEmail(params.body.email) : ''
-  const password = typeof params.body.password === 'string' ? params.body.password : ''
+    typeof params.body.email === 'string'
+      ? normalizeEmail(params.body.email)
+      : ''
+  const password =
+    typeof params.body.password === 'string' ? params.body.password : ''
 
   if (!email || !password) {
     throw new AuthServiceError(
@@ -98,9 +97,9 @@ export async function loginUser(params: {
     }),
   ])
 
-  return {
+  const result: LoginResult = {
     result: {
-      user: toPublicUser({
+      user: toUserDto({
         user: emailRecord.user,
         provider: identity.provider,
       }),
@@ -108,4 +107,5 @@ export async function loginUser(params: {
     },
     logMeta: { userId: emailRecord.user.id },
   }
+  return result
 }

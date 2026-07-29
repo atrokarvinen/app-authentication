@@ -3,26 +3,25 @@ import {
   createSessionToken,
   hashPassword,
   hashSessionToken,
-} from '../../../lib/auth'
-import { prisma } from '../../../lib/prisma'
-import type { RegisterRequestBody, RegisterResponseBody } from '../types/http'
-import { AuthServiceError } from './errors'
-import { normalizeEmail, toPublicUser } from './authShared'
+} from '../../../../lib/auth'
+import { prisma } from '../../../../lib/prisma'
+import { normalizeEmail, toUserDto } from '../authShared'
+import { AuthServiceError } from '../errors'
+import type { RegisterArgs, RegisterResult } from './types'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
-export async function registerUser(params: {
-  body: Partial<RegisterRequestBody>
-  ipAddress: string | null
-  userAgent: string | null
-}): Promise<{ result: RegisterResponseBody; logMeta: Record<string, unknown> }> {
+export async function registerUser(params: RegisterArgs) {
   const displayName =
     typeof params.body.displayName === 'string'
       ? params.body.displayName.trim()
       : ''
   const email =
-    typeof params.body.email === 'string' ? normalizeEmail(params.body.email) : ''
-  const password = typeof params.body.password === 'string' ? params.body.password : ''
+    typeof params.body.email === 'string'
+      ? normalizeEmail(params.body.email)
+      : ''
+  const password =
+    typeof params.body.password === 'string' ? params.body.password : ''
 
   if (!displayName || !email || !password) {
     throw new AuthServiceError(
@@ -135,11 +134,13 @@ export async function registerUser(params: {
     })
   })
 
-  return {
+  const result: RegisterResult = {
     result: {
-      user: toPublicUser({ user: created, provider: AuthProvider.CREDENTIALS }),
+      user: toUserDto({ user: created, provider: AuthProvider.CREDENTIALS }),
       sessionToken,
     },
     logMeta: { userId: created.id, email },
   }
+
+  return result
 }

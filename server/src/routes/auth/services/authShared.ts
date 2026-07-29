@@ -1,17 +1,14 @@
 import { AuthProvider, UserStatus } from '@prisma/client'
 import type { Request } from 'express'
 import type { DbUserProfile } from '../types/database'
-import type {
-  ApiUserStatus,
-  LogoutRequestBody,
-  PublicUserResponse,
-} from '../types/http'
+import type { ApiUserStatus, UserDto } from '../types/http'
+import type { LogoutRequestBody } from './logout/types'
 
 export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase()
 }
 
-function providerToClient(provider: AuthProvider): PublicUserResponse['authProvider'] {
+function providerToClient(provider: AuthProvider): UserDto['authProvider'] {
   switch (provider) {
     case AuthProvider.CREDENTIALS:
       return 'Credentials'
@@ -39,10 +36,10 @@ function statusToClient(status: UserStatus): ApiUserStatus {
   }
 }
 
-export function toPublicUser(params: {
+export function toUserDto(params: {
   user: DbUserProfile
   provider: AuthProvider
-}): PublicUserResponse {
+}): UserDto {
   const primaryEmail =
     params.user.emails.find((entry) => entry.isPrimary)?.email ||
     params.user.emails[0]?.email ||

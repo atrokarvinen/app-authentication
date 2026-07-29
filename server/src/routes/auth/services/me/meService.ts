@@ -1,13 +1,11 @@
 import { AuthProvider } from '@prisma/client'
-import { hashSessionToken } from '../../../lib/auth'
-import { prisma } from '../../../lib/prisma'
-import type { MeResponseBody } from '../types/http'
-import { toPublicUser } from './authShared'
-import { AuthServiceError } from './errors'
+import { hashSessionToken } from '../../../../lib/auth'
+import { prisma } from '../../../../lib/prisma'
+import { toUserDto } from '../authShared'
+import { AuthServiceError } from '../errors'
+import type { MeArgs, MeResult } from './types'
 
-export async function getCurrentUser(params: {
-  sessionToken: string | null
-}): Promise<{ result: MeResponseBody; logMeta: Record<string, unknown> }> {
+export async function getCurrentUser(params: MeArgs) {
   if (!params.sessionToken) {
     throw new AuthServiceError(
       'Not authenticated.',
@@ -52,13 +50,15 @@ export async function getCurrentUser(params: {
   const provider =
     session.user.identities[0]?.provider || AuthProvider.CREDENTIALS
 
-  return {
+  const result: MeResult = {
     result: {
-      user: toPublicUser({
+      user: toUserDto({
         user: session.user,
         provider,
       }),
     },
     logMeta: { userId: session.user.id },
   }
+
+  return result
 }

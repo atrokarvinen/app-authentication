@@ -2,15 +2,13 @@ import { Router } from 'express'
 import { getLogger } from '../../lib/logging/httpLogger'
 import { getSessionTokenFromRequest } from './services/authShared'
 import { AuthServiceError } from './services/errors'
-import { loginUser } from './services/loginService'
-import { logoutUser } from './services/logoutService'
-import { getCurrentUser } from './services/meService'
-import { registerUser } from './services/registerService'
-import type {
-  ErrorResponse,
-  LogoutResponseBody,
-  MeResponseBody,
-} from './types/http'
+import { loginUser } from './services/login/loginService'
+import { logoutUser } from './services/logout/logoutService'
+import type { LogoutResponseBody } from './services/logout/types'
+import { getCurrentUser } from './services/me/meService'
+import type { MeResponseBody } from './services/me/types'
+import { registerUser } from './services/register/registerService'
+import type { ErrorResponse } from './types/http'
 
 const authRouter = Router()
 

@@ -1,8 +1,9 @@
-import { hashSessionToken } from '../../../lib/auth'
-import { prisma } from '../../../lib/prisma'
-import { AuthServiceError } from './errors'
+import { hashSessionToken } from '../../../../lib/auth'
+import { prisma } from '../../../../lib/prisma'
+import { AuthServiceError } from '../errors'
+import type { LogoutArgs, LogoutResult } from './types'
 
-export async function logoutUser(params: { sessionToken: string | null }): Promise<{ revokedCount: number }> {
+export async function logoutUser(params: LogoutArgs) {
   if (!params.sessionToken) {
     throw new AuthServiceError(
       'Session token is required.',
@@ -21,5 +22,6 @@ export async function logoutUser(params: { sessionToken: string | null }): Promi
     },
   })
 
-  return { revokedCount: result.count }
+  const logoutResult: LogoutResult = { revokedCount: result.count }
+  return logoutResult
 }
