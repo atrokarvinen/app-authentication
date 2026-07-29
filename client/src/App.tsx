@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import TerminalIcon from '@mui/icons-material/Terminal'
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl'
 import RouteIcon from '@mui/icons-material/Route'
+import TerminalIcon from '@mui/icons-material/Terminal'
 import {
   Box,
   Chip,
@@ -14,6 +13,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { getHealthStatus } from './api/health'
 import { HealthStatusCard } from './components/HealthStatusCard'
 import type { HealthResponse } from './types/api'
@@ -83,9 +83,14 @@ function App() {
                 >
                   React on the front, Express on the back.
                 </Typography>
-                <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 720 }}>
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  sx={{ maxWidth: 720 }}
+                >
                   This workspace starts with a Vite client, a TypeScript Express
-                  API, shared npm workspace scripts, and Material UI ready to use.
+                  API, shared npm workspace scripts, and Material UI ready to
+                  use.
                 </Typography>
               </Box>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
@@ -103,11 +108,11 @@ function App() {
               gridTemplateColumns: { xs: '1fr', md: '1.2fr 1fr' },
             }}
           >
-        <HealthStatusCard
-          health={health}
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-        />
+            <HealthStatusCard
+              health={health}
+              isLoading={isLoading}
+              errorMessage={errorMessage}
+            />
 
             <Paper
               elevation={0}

@@ -62,7 +62,10 @@ export function HealthStatusCard({
           ) : null}
 
           {errorMessage ? (
-            <Alert severity="error" icon={<ErrorOutlineIcon fontSize="inherit" />}>
+            <Alert
+              severity="error"
+              icon={<ErrorOutlineIcon fontSize="inherit" />}
+            >
               {errorMessage}
             </Alert>
           ) : null}
@@ -84,7 +87,8 @@ export function HealthStatusCard({
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <AccessTimeIcon color="action" />
                 <Typography>
-                  Checked at: <strong>{new Date(health.timestamp).toLocaleString()}</strong>
+                  Checked at:{' '}
+                  <strong>{new Date(health.timestamp).toLocaleString()}</strong>
                 </Typography>
               </Stack>
             </Stack>
