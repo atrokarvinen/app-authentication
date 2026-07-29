@@ -21,11 +21,11 @@ type HealthStatusCardProps = {
   errorMessage: string | null
 }
 
-export function HealthStatusCard({
+export const HealthStatusCard = ({
   health,
   isLoading,
   errorMessage,
-}: HealthStatusCardProps) {
+}: HealthStatusCardProps) => {
   return (
     <Card
       elevation={0}

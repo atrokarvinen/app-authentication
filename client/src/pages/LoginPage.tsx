@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import type { FormEvent } from 'react'
+import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { AuthProvider, UserProfile } from '../types/auth'
@@ -25,17 +25,17 @@ type LoginPageProps = {
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
-export function LoginPage({
+export const LoginPage = ({
   user,
   onSignIn,
   onProviderSignIn,
-}: LoginPageProps) {
+}: LoginPageProps) => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showRegisterHint, setShowRegisterHint] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     onSignIn(email)
     setPassword('')

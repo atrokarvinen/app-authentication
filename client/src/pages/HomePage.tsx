@@ -28,13 +28,13 @@ type HomePageProps = {
   onSignOut: () => void
 }
 
-export function HomePage({
+export const HomePage = ({
   user,
   health,
   isLoading,
   errorMessage,
   onSignOut,
-}: HomePageProps) {
+}: HomePageProps) => {
   return (
     <Stack spacing={3.5}>
       <Paper
