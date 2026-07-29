@@ -52,7 +52,11 @@ export const HomePage = ({
                 ? `Welcome back, ${user.displayName}.`
                 : 'Authentication starter dashboard.'}
             </Typography>
-            <Typography variant="h6" color="text.secondary" className={styles.summary}>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              className={styles.summary}
+            >
               {user
                 ? 'Your starter profile is active below. Replace this local state with backend-backed authentication when you wire the real auth flow.'
                 : 'No user session is active. Use the login page to test credentials or social sign-in buttons.'}

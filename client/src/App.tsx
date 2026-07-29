@@ -5,11 +5,11 @@ import { AppBar, Box, Chip, Container, Stack, Toolbar } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { NavLink, Route, Routes } from 'react-router'
 import { getHealthStatus } from './api/health'
+import styles from './App.module.css'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import type { HealthResponse } from './types/api'
 import type { UserProfile } from './types/auth'
-import styles from './App.module.css'
 
 const App = () => {
   const [health, setHealth] = useState<HealthResponse | null>(null)

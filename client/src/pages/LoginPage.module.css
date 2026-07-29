@@ -9,7 +9,11 @@
   padding: 24px;
   border-radius: 24px;
   border: 1px solid rgba(64, 45, 31, 0.16);
-  background: linear-gradient(180deg, rgba(255, 250, 240, 0.96) 0%, rgba(248, 244, 236, 0.9) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 250, 240, 0.96) 0%,
+    rgba(248, 244, 236, 0.9) 100%
+  );
   box-shadow: 0 24px 60px rgba(71, 49, 17, 0.12);
 }
 
