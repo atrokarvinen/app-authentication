@@ -2,13 +2,7 @@ import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded'
 import GoogleIcon from '@mui/icons-material/Google'
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined'
 import MicrosoftIcon from '@mui/icons-material/Microsoft'
-import {
-  Button,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import type { AuthProvider } from '../../types/auth'
@@ -19,10 +13,7 @@ type LoginFormProps = {
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
-export const LoginForm = ({
-  onSignIn,
-  onProviderSignIn,
-}: LoginFormProps) => {
+export const LoginForm = ({ onSignIn, onProviderSignIn }: LoginFormProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 

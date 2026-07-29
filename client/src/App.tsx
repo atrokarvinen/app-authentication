@@ -8,6 +8,7 @@ import { getHealthStatus } from './api/health'
 import styles from './App.module.css'
 import { HomePage } from './pages/home/HomePage'
 import { LoginPage } from './pages/login/LoginPage'
+import { RegistrationPage } from './pages/login/RegistrationPage'
 import type { HealthResponse } from './types/api'
 import type { UserProfile } from './types/auth'
 
@@ -172,6 +173,10 @@ const App = () => {
                   onProviderSignIn={signInWithProvider}
                 />
               }
+            />
+            <Route
+              path="/register"
+              element={<RegistrationPage user={user} />}
             />
           </Routes>
         </Container>

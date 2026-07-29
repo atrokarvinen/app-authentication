@@ -1,6 +1,4 @@
-import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
 import { Alert, Box, Link, Paper, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { AuthProvider, UserProfile } from '../../types/auth'
 import { LoginForm } from './LoginForm'
@@ -18,7 +16,6 @@ export const LoginPage = ({
   onProviderSignIn,
 }: LoginPageProps) => {
   const navigate = useNavigate()
-  const [showRegisterHint, setShowRegisterHint] = useState(false)
 
   const handleSignIn = (email: string) => {
     onSignIn(email)
@@ -58,25 +55,10 @@ export const LoginPage = ({
 
           <Typography color="text.secondary">
             Need an account?{' '}
-            <Link
-              component={RouterLink}
-              to="/login"
-              underline="hover"
-              onClick={() => setShowRegisterHint(true)}
-            >
+            <Link component={RouterLink} to="/register" underline="hover">
               Go to registration
             </Link>
           </Typography>
-
-          {showRegisterHint ? (
-            <Alert
-              icon={<HowToRegOutlinedIcon fontSize="inherit" />}
-              severity="success"
-            >
-              Registration is the next page to implement. This link is wired as
-              the placeholder handoff.
-            </Alert>
-          ) : null}
         </Stack>
       </Paper>
     </Box>
