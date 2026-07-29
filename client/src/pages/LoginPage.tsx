@@ -35,14 +35,14 @@ export const LoginPage = ({
   const [password, setPassword] = useState('')
   const [showRegisterHint, setShowRegisterHint] = useState(false)
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     onSignIn(email)
     setPassword('')
     navigate('/')
   }
 
-  function handleProviderSignIn(provider: AuthProvider) {
+  const handleProviderSignIn = (provider: AuthProvider) => {
     onProviderSignIn(provider)
     navigate('/')
   }

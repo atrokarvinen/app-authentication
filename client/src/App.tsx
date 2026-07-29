@@ -10,7 +10,7 @@ import { LoginPage } from './pages/LoginPage'
 import type { HealthResponse } from './types/api'
 import type { UserProfile } from './types/auth'
 
-function App() {
+const App = () => {
   const [health, setHealth] = useState<HealthResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     let isMounted = true
 
-    async function loadHealthStatus() {
+    const loadHealthStatus = async () => {
       try {
         const response = await getHealthStatus()
         if (isMounted) {
@@ -46,7 +46,7 @@ function App() {
     }
   }, [])
 
-  function signInWithCredentials(email: string) {
+  const signInWithCredentials = (email: string) => {
     const normalizedEmail = email.trim().toLowerCase()
     const displayName = normalizedEmail.split('@')[0] || 'user'
 
@@ -62,7 +62,7 @@ function App() {
     })
   }
 
-  function signInWithProvider(provider: UserProfile['authProvider']) {
+  const signInWithProvider = (provider: UserProfile['authProvider']) => {
     const providerProfiles: Record<UserProfile['authProvider'], UserProfile> = {
       Credentials: {
         displayName: 'Demo Member',
@@ -93,7 +93,7 @@ function App() {
     setUser(providerProfiles[provider])
   }
 
-  function signOut() {
+  const signOut = () => {
     setUser(null)
   }
 

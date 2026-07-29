@@ -1,6 +1,6 @@
 import type { HealthResponse } from '../types/api'
 
-export async function getHealthStatus(): Promise<HealthResponse> {
+export const getHealthStatus = async (): Promise<HealthResponse> => {
   const response = await fetch('/api/health')
 
   if (!response.ok) {
