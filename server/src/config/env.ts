@@ -1,4 +1,7 @@
 export const env = {
   port: Number(process.env.PORT) || 3001,
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  databaseUrl:
+    process.env.DATABASE_URL ||
+    'postgresql://app_user:app_password@localhost:5432/app_authentication?schema=public',
 }

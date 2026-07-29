@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+  FACEBOOK
+  MICROSOFT
+}
+
+enum VerificationSource {
+  LOCAL
+  GOOGLE
+  FACEBOOK
+  MICROSOFT
+  ADMIN
+}
+
+model User {
+  id          String     @id @default(uuid())
+  status      UserStatus @default(PENDING)
+  displayName String
+  avatarUrl   String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+  lastLoginAt DateTime?
+
+  emails     UserEmail[]
+  identities UserIdentity[]
+  sessions   Session[]
+  roles      UserRole[]
+
+  @@map("users")
+}
+
+model UserEmail {
+  id                 String             @id @default(uuid())
+  userId             String
+  email              String             @unique
+  isPrimary          Boolean            @default(false)
+  isVerified         Boolean            @default(false)
+  verifiedAt         DateTime?
+  verificationSource VerificationSource @default(LOCAL)
+  createdAt          DateTime           @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_emails")
+}
+
+model UserIdentity {
+  id                 String       @id @default(uuid())
+  userId             String
+  provider           AuthProvider
+  providerUserId     String
+  usernameOrLogin    String?
+  passwordHash       String?
+  passwordAlgo       String?
+  passwordUpdatedAt  DateTime?
+  oauthAccessToken   String?
+  oauthRefreshToken  String?
+  oauthTokenExpiresAt DateTime?
+  providerProfile    Json?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+  @@map("user_identities")
+}
+
+model Session {
+  id               String    @id @default(uuid())
+  userId           String
+  refreshTokenHash String
+  deviceInfo       String?
+  ipAddress        String?
+  userAgent        String?
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Role {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
