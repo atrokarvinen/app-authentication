@@ -11,12 +11,12 @@ export type LoginResult = {
   logMeta: Record<string, unknown>
 }
 
-export type LoginRequestBody = {
+type LoginRequestBody = {
   email: string
   password: string
 }
 
-export type LoginResponseBody = {
+type LoginResponseBody = {
   user: UserDto
   sessionToken: string
 }

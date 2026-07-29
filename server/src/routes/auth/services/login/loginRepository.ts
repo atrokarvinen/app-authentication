@@ -3,11 +3,11 @@ import { AuthProvider, type PrismaClient } from '@prisma/client'
 import { prisma } from '../../../../lib/prisma'
 import type { DbUserWithIdentities } from '../../types/database'
 
-export type LoginEmailRecord = {
+type LoginEmailRecord = {
   user: DbUserWithIdentities
 } | null
 
-export type PersistSuccessfulLoginArgs = {
+type PersistSuccessfulLoginArgs = {
   userId: string
   lastLoginAt: Date
   session: {

@@ -1,18 +1,18 @@
 import type { AuthProvider, UserStatus } from '@prisma/client'
 
-export type DbUserEmail = {
+type DbUserEmail = {
   email: string
   isPrimary: boolean
   createdAt: Date
 }
 
-export type DbUserRole = {
+type DbUserRole = {
   role: {
     name: string
   }
 }
 
-export type DbUserIdentity = {
+type DbUserIdentity = {
   provider: AuthProvider
   passwordHash: string | null
 }

@@ -1,5 +1,4 @@
-export type ApiAuthProvider =
-  'Credentials' | 'Google' | 'Facebook' | 'Microsoft'
+type ApiAuthProvider = 'Credentials' | 'Google' | 'Facebook' | 'Microsoft'
 
 export type ApiUserStatus = 'Active' | 'Pending' | 'Suspended'
 

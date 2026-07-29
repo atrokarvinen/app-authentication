@@ -3,7 +3,7 @@ import { AuthProvider, type PrismaClient } from '@prisma/client'
 import { prisma } from '../../../../lib/prisma'
 import type { DbUserWithIdentities } from '../../types/database'
 
-export type ActiveSessionRecord = {
+type ActiveSessionRecord = {
   user: DbUserWithIdentities
 } | null
 

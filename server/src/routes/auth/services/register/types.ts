@@ -11,13 +11,13 @@ export type RegisterResult = {
   logMeta: Record<string, unknown>
 }
 
-export type RegisterRequestBody = {
+type RegisterRequestBody = {
   displayName: string
   email: string
   password: string
 }
 
-export type RegisterResponseBody = {
+type RegisterResponseBody = {
   user: UserDto
   sessionToken: string
 }

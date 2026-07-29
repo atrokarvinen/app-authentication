@@ -3,7 +3,7 @@ import { AuthProvider, UserStatus, type PrismaClient } from '@prisma/client'
 import { prisma } from '../../../../lib/prisma'
 import type { DbUserProfile } from '../../types/database'
 
-export type CreateRegisteredUserArgs = {
+type CreateRegisteredUserArgs = {
   displayName: string
   email: string
   passwordHash: string
