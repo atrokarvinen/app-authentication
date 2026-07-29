@@ -1,9 +1,9 @@
 import { AuthProvider, UserStatus } from '@prisma/client'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { IAuthCryptoHelper } from '../../../../lib/authCryptoHelper'
+import type { IClock } from '../../../../lib/clock'
 import { AuthServiceError } from '../errors'
-import type { IClock } from './loginClock'
-import type { ILoginCryptoHelper } from './loginCryptoHelper'
 import type { ILoginRepository } from './loginRepository'
 import { LoginService } from './loginService'
 
@@ -13,10 +13,11 @@ function createService() {
     persistSuccessfulLogin: vi.fn(),
   }
 
-  const cryptoHelper: ILoginCryptoHelper = {
+  const cryptoHelper: IAuthCryptoHelper = {
     verifyPassword: vi.fn(),
     createSessionToken: vi.fn(),
     hashSessionToken: vi.fn(),
+    hashPassword: vi.fn(),
   }
 
   const clock: IClock = {

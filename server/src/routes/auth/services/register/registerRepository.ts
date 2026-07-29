@@ -1,0 +1,111 @@
+import { AuthProvider, UserStatus, type PrismaClient } from '@prisma/client'
+
+import { prisma } from '../../../../lib/prisma'
+import type { DbUserProfile } from '../../types/database'
+
+export type CreateRegisteredUserArgs = {
+  displayName: string
+  email: string
+  passwordHash: string
+  sessionTokenHash: string
+  expiresAt: Date
+  ipAddress: string | null
+  userAgent: string | null
+  now: Date
+}
+
+export interface IRegisterRepository {
+  emailExists(email: string): Promise<boolean>
+  createRegisteredUser(params: CreateRegisteredUserArgs): Promise<DbUserProfile>
+}
+
+export class PrismaRegisterRepository implements IRegisterRepository {
+  constructor(private readonly prismaClient: PrismaClient = prisma) {}
+
+  async emailExists(email: string): Promise<boolean> {
+    const existingEmail = await this.prismaClient.userEmail.findUnique({
+      where: { email },
+      select: { id: true },
+    })
+    return Boolean(existingEmail)
+  }
+
+  async createRegisteredUser(
+    params: CreateRegisteredUserArgs
+  ): Promise<DbUserProfile> {
+    return this.prismaClient.$transaction(async (tx) => {
+      const role = await tx.role.upsert({
+        where: { name: 'member' },
+        update: {},
+        create: {
+          name: 'member',
+          description: 'Default application member role.',
+        },
+      })
+
+      const user = await tx.user.create({
+        data: {
+          status: UserStatus.ACTIVE,
+          displayName: params.displayName,
+          lastLoginAt: params.now,
+          emails: {
+            create: {
+              email: params.email,
+              isPrimary: true,
+              isVerified: true,
+              verificationSource: 'LOCAL',
+              verifiedAt: params.now,
+            },
+          },
+          identities: {
+            create: {
+              provider: AuthProvider.CREDENTIALS,
+              providerUserId: params.email,
+              usernameOrLogin: params.email,
+              passwordHash: params.passwordHash,
+              passwordAlgo: 'scrypt',
+              passwordUpdatedAt: params.now,
+            },
+          },
+        },
+        include: {
+          emails: true,
+          roles: {
+            include: {
+              role: true,
+            },
+          },
+        },
+      })
+
+      await tx.userRole.create({
+        data: {
+          userId: user.id,
+          roleId: role.id,
+        },
+      })
+
+      await tx.session.create({
+        data: {
+          userId: user.id,
+          refreshTokenHash: params.sessionTokenHash,
+          expiresAt: params.expiresAt,
+          ipAddress: params.ipAddress,
+          userAgent: params.userAgent,
+        },
+      })
+
+      return tx.user.findUniqueOrThrow({
+        where: { id: user.id },
+        include: {
+          emails: true,
+          roles: {
+            include: {
+              role: true,
+            },
+          },
+        },
+      })
+    })
+  }
+}

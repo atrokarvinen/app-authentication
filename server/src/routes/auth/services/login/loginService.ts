@@ -1,8 +1,11 @@
 import { UserStatus } from '@prisma/client'
+import {
+  AuthCryptoHelper,
+  type IAuthCryptoHelper,
+} from '../../../../lib/authCryptoHelper'
+import { SystemClock, type IClock } from '../../../../lib/clock'
 import { normalizeEmail, toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
-import { SystemClock, type IClock } from './loginClock'
-import { LoginCryptoHelper, type ILoginCryptoHelper } from './loginCryptoHelper'
 import { PrismaLoginRepository, type ILoginRepository } from './loginRepository'
 import type { LoginArgs, LoginResult } from './types'
 
@@ -11,7 +14,7 @@ const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 export class LoginService {
   constructor(
     private readonly repository: ILoginRepository,
-    private readonly cryptoHelper: ILoginCryptoHelper,
+    private readonly cryptoHelper: IAuthCryptoHelper,
     private readonly clock: IClock
   ) {}
 
@@ -100,7 +103,7 @@ export class LoginService {
 
 const loginService = new LoginService(
   new PrismaLoginRepository(),
-  new LoginCryptoHelper(),
+  new AuthCryptoHelper(),
   new SystemClock()
 )
 

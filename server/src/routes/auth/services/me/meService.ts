@@ -1,64 +1,66 @@
 import { AuthProvider } from '@prisma/client'
-import { hashSessionToken } from '../../../../lib/auth'
-import { prisma } from '../../../../lib/prisma'
+import {
+  AuthCryptoHelper,
+  type IAuthCryptoHelper,
+} from '../../../../lib/authCryptoHelper'
+import { SystemClock, type IClock } from '../../../../lib/clock'
 import { toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
+import { PrismaMeRepository, type IMeRepository } from './meRepository'
 import type { MeArgs, MeResult } from './types'
 
-export async function getCurrentUser(params: MeArgs) {
-  if (!params.sessionToken) {
-    throw new AuthServiceError(
-      'Not authenticated.',
-      401,
-      'auth.me.missing_token'
+export class MeService {
+  constructor(
+    private readonly repository: IMeRepository,
+    private readonly cryptoHelper: IAuthCryptoHelper,
+    private readonly clock: IClock
+  ) {}
+
+  async getCurrentUser(params: MeArgs): Promise<MeResult> {
+    if (!params.sessionToken) {
+      throw new AuthServiceError(
+        'Not authenticated.',
+        401,
+        'auth.me.missing_token'
+      )
+    }
+
+    const session = await this.repository.findActiveSessionByTokenHash(
+      this.cryptoHelper.hashSessionToken(params.sessionToken),
+      this.clock.now()
     )
-  }
 
-  const session = await prisma.session.findFirst({
-    where: {
-      refreshTokenHash: hashSessionToken(params.sessionToken),
-      revokedAt: null,
-      expiresAt: {
-        gt: new Date(),
+    if (!session) {
+      throw new AuthServiceError(
+        'Session is invalid or expired.',
+        401,
+        'auth.me.invalid_or_expired_session'
+      )
+    }
+
+    const provider =
+      session.user.identities[0]?.provider || AuthProvider.CREDENTIALS
+
+    const result: MeResult = {
+      result: {
+        user: toUserDto({
+          user: session.user,
+          provider,
+        }),
       },
-    },
-    include: {
-      user: {
-        include: {
-          emails: true,
-          identities: {
-            where: { provider: AuthProvider.CREDENTIALS },
-          },
-          roles: {
-            include: {
-              role: true,
-            },
-          },
-        },
-      },
-    },
-  })
+      logMeta: { userId: session.user.id },
+    }
 
-  if (!session) {
-    throw new AuthServiceError(
-      'Session is invalid or expired.',
-      401,
-      'auth.me.invalid_or_expired_session'
-    )
+    return result
   }
+}
 
-  const provider =
-    session.user.identities[0]?.provider || AuthProvider.CREDENTIALS
+const meService = new MeService(
+  new PrismaMeRepository(),
+  new AuthCryptoHelper(),
+  new SystemClock()
+)
 
-  const result: MeResult = {
-    result: {
-      user: toUserDto({
-        user: session.user,
-        provider,
-      }),
-    },
-    logMeta: { userId: session.user.id },
-  }
-
-  return result
+export function getCurrentUser(params: MeArgs): Promise<MeResult> {
+  return meService.getCurrentUser(params)
 }
