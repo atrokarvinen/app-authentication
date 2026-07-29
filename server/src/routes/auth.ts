@@ -1,11 +1,13 @@
 import { AuthProvider, UserStatus } from '@prisma/client'
 import { Router } from 'express'
+import type { Logger } from 'pino'
 import {
   createSessionToken,
   hashPassword,
   hashSessionToken,
   verifyPassword,
 } from '../lib/auth'
+import { logger } from '../lib/logging/logger'
 import { prisma } from '../lib/prisma'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
@@ -19,6 +21,10 @@ type PublicUser = {
   authProvider: 'Credentials' | 'Google' | 'Facebook' | 'Microsoft'
   role: string
   status: string
+}
+
+function getLogger(request: { log?: Logger }): Logger {
+  return request.log ?? logger
 }
 
 function normalizeEmail(value: string): string {
@@ -96,6 +102,8 @@ function toPublicUser(params: {
 }
 
 authRouter.post('/register', async (request, response) => {
+  const log = getLogger(request)
+
   const body = request.body as {
     displayName?: unknown
     email?: unknown
@@ -108,6 +116,7 @@ authRouter.post('/register', async (request, response) => {
   const password = typeof body.password === 'string' ? body.password : ''
 
   if (!displayName || !email || !password) {
+    log.warn('auth.register.invalid_payload')
     response
       .status(400)
       .json({ error: 'Display name, email, and password are required.' })
@@ -115,6 +124,7 @@ authRouter.post('/register', async (request, response) => {
   }
 
   if (password.length < 8) {
+    log.warn({ email }, 'auth.register.password_too_short')
     response
       .status(400)
       .json({ error: 'Password must be at least 8 characters long.' })
@@ -127,6 +137,7 @@ authRouter.post('/register', async (request, response) => {
   })
 
   if (existingEmail) {
+    log.warn({ email }, 'auth.register.email_exists')
     response.status(409).json({ error: 'Email is already registered.' })
     return
   }
@@ -217,14 +228,19 @@ authRouter.post('/register', async (request, response) => {
     user: toPublicUser({ user: created, provider: AuthProvider.CREDENTIALS }),
     sessionToken,
   })
+
+  log.info({ userId: created.id, email }, 'auth.register.success')
 })
 
 authRouter.post('/login', async (request, response) => {
+  const log = getLogger(request)
+
   const body = request.body as { email?: unknown; password?: unknown }
   const email = typeof body.email === 'string' ? normalizeEmail(body.email) : ''
   const password = typeof body.password === 'string' ? body.password : ''
 
   if (!email || !password) {
+    log.warn('auth.login.invalid_payload')
     response.status(400).json({ error: 'Email and password are required.' })
     return
   }
@@ -251,11 +267,13 @@ authRouter.post('/login', async (request, response) => {
   const identity = emailRecord?.user.identities[0]
 
   if (!emailRecord || !identity?.passwordHash) {
+    log.warn({ email }, 'auth.login.invalid_credentials')
     response.status(401).json({ error: 'Invalid email or password.' })
     return
   }
 
   if (emailRecord.user.status === UserStatus.SUSPENDED) {
+    log.warn({ userId: emailRecord.user.id }, 'auth.login.suspended_user')
     response.status(403).json({ error: 'This account has been suspended.' })
     return
   }
@@ -263,6 +281,7 @@ authRouter.post('/login', async (request, response) => {
   const passwordMatches = await verifyPassword(password, identity.passwordHash)
 
   if (!passwordMatches) {
+    log.warn({ userId: emailRecord.user.id }, 'auth.login.invalid_credentials')
     response.status(401).json({ error: 'Invalid email or password.' })
     return
   }
@@ -294,17 +313,21 @@ authRouter.post('/login', async (request, response) => {
     }),
     sessionToken,
   })
+
+  log.info({ userId: emailRecord.user.id }, 'auth.login.success')
 })
 
 authRouter.post('/logout', async (request, response) => {
+  const log = getLogger(request)
   const sessionToken = getSessionTokenFromRequest(request)
 
   if (!sessionToken) {
+    log.warn('auth.logout.missing_token')
     response.status(400).json({ error: 'Session token is required.' })
     return
   }
 
-  await prisma.session.updateMany({
+  const result = await prisma.session.updateMany({
     where: {
       refreshTokenHash: hashSessionToken(sessionToken),
       revokedAt: null,
@@ -315,12 +338,16 @@ authRouter.post('/logout', async (request, response) => {
   })
 
   response.json({ success: true })
+
+  log.info({ revokedCount: result.count }, 'auth.logout.success')
 })
 
 authRouter.get('/me', async (request, response) => {
+  const log = getLogger(request)
   const sessionToken = getSessionTokenFromRequest(request)
 
   if (!sessionToken) {
+    log.warn('auth.me.missing_token')
     response.status(401).json({ error: 'Not authenticated.' })
     return
   }
@@ -351,6 +378,7 @@ authRouter.get('/me', async (request, response) => {
   })
 
   if (!session) {
+    log.warn('auth.me.invalid_or_expired_session')
     response.status(401).json({ error: 'Session is invalid or expired.' })
     return
   }
@@ -364,6 +392,8 @@ authRouter.get('/me', async (request, response) => {
       provider,
     }),
   })
+
+  log.info({ userId: session.user.id }, 'auth.me.success')
 })
 
 export { authRouter }
