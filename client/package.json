@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "unused-exports": "ts-unused-exports tsconfig.app.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview"
@@ -32,6 +33,7 @@
     "globals": "^17.8.0",
     "typescript": "~7.0.2",
     "typescript-eslint": "^8.65.0",
+    "ts-unused-exports": "^11.0.1",
     "vite": "^8.1.5"
   }
 }
