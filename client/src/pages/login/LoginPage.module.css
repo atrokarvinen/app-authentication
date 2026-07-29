@@ -22,10 +22,6 @@
   margin-bottom: 12px;
 }
 
-.growDivider {
-  flex: 1;
-}
-
 @media (min-width: 900px) {
   .loginPageShell {
     min-height: calc(100vh - 210px);

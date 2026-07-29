@@ -16,9 +16,9 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
-import { HealthStatusCard } from '../components/HealthStatusCard'
-import type { HealthResponse } from '../types/api'
-import type { UserProfile } from '../types/auth'
+import { HealthStatusCard } from '../../components/HealthStatusCard'
+import type { HealthResponse } from '../../types/api'
+import type { UserProfile } from '../../types/auth'
 import styles from './HomePage.module.css'
 
 type HomePageProps = {
