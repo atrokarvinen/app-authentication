@@ -2,11 +2,19 @@
 
 Starter workspace with a React + TypeScript frontend in `client` and an Express + TypeScript backend in `server`.
 
+## Workspace scripts
+
+```bash
+npm install
+npm run dev
+npm run build
+npm run lint
+```
+
 ## Frontend
 
 ```bash
 cd client
-npm install
 npm run dev
 ```
 
@@ -14,7 +22,6 @@ npm run dev
 
 ```bash
 cd server
-npm install
 npm run dev
 ```
 
