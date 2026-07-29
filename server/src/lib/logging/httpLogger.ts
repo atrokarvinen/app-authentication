@@ -1,3 +1,4 @@
+import type { Logger } from 'pino'
 import pinoHttp from 'pino-http'
 import { logger } from './logger'
 
@@ -16,3 +17,7 @@ export const httpLogger = pinoHttp({
     return 'info'
   },
 })
+
+export const getLogger = (request: { log?: Logger }): Logger => {
+  return request.log ?? logger
+}

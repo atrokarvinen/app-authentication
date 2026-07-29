@@ -1,13 +1,12 @@
 import { AuthProvider, UserStatus } from '@prisma/client'
 import { Router } from 'express'
-import type { Logger } from 'pino'
 import {
   createSessionToken,
   hashPassword,
   hashSessionToken,
   verifyPassword,
 } from '../lib/auth'
-import { logger } from '../lib/logging/logger'
+import { getLogger } from '../lib/logging/httpLogger'
 import { prisma } from '../lib/prisma'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
@@ -21,10 +20,6 @@ type PublicUser = {
   authProvider: 'Credentials' | 'Google' | 'Facebook' | 'Microsoft'
   role: string
   status: string
-}
-
-function getLogger(request: { log?: Logger }): Logger {
-  return request.log ?? logger
 }
 
 function normalizeEmail(value: string): string {
