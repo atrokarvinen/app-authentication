@@ -1,4 +1,3 @@
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import {
   Alert,
@@ -18,34 +17,56 @@ import styles from './RegistrationPage.module.css'
 
 type RegistrationPageProps = {
   user: UserProfile | null
+  onRegister: (params: {
+    displayName: string
+    email: string
+    password: string
+  }) => Promise<void>
 }
 
-export const RegistrationPage = ({ user }: RegistrationPageProps) => {
+export const RegistrationPage = ({
+  user,
+  onRegister,
+}: RegistrationPageProps) => {
   const navigate = useNavigate()
   const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match.')
-      setShowSuccess(false)
       return
     }
 
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.')
-      setShowSuccess(false)
       return
     }
 
-    setErrorMessage(null)
-    setShowSuccess(true)
+    setIsSubmitting(true)
+
+    try {
+      await onRegister({
+        displayName,
+        email,
+        password,
+      })
+
+      setErrorMessage(null)
+      navigate('/')
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Registration failed.'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -70,16 +91,6 @@ export const RegistrationPage = ({ user }: RegistrationPageProps) => {
           ) : null}
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-
-          {showSuccess ? (
-            <Alert
-              icon={<CheckCircleOutlineIcon fontSize="inherit" />}
-              severity="success"
-            >
-              Registration details accepted for {displayName || email}. Continue
-              to login to sign in.
-            </Alert>
-          ) : null}
 
           <Stack component="form" spacing={2} onSubmit={handleSubmit}>
             <TextField
@@ -123,6 +134,8 @@ export const RegistrationPage = ({ user }: RegistrationPageProps) => {
                 variant="contained"
                 size="large"
                 startIcon={<PersonAddAlt1Icon />}
+                disabled={isSubmitting}
+                loading={isSubmitting}
               >
                 Register
               </Button>

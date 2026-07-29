@@ -4,6 +4,13 @@ import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined'
 import { AppBar, Box, Chip, Container, Stack, Toolbar } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { NavLink, Route, Routes } from 'react-router'
+import {
+  getCurrentUser,
+  loginWithCredentials,
+  logoutWithSessionToken,
+  mapApiUserToProfile,
+  registerWithCredentials,
+} from './api/auth'
 import { getHealthStatus } from './api/health'
 import styles from './App.module.css'
 import { HomePage } from './pages/home/HomePage'
@@ -13,6 +20,8 @@ import type { HealthResponse } from './types/api'
 import type { UserProfile } from './types/auth'
 
 const App = () => {
+  const SESSION_TOKEN_STORAGE_KEY = 'app_auth_session_token'
+
   const [health, setHealth] = useState<HealthResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -48,20 +57,71 @@ const App = () => {
     }
   }, [])
 
-  const signInWithCredentials = (email: string) => {
-    const normalizedEmail = email.trim().toLowerCase()
-    const displayName = normalizedEmail.split('@')[0] || 'user'
+  useEffect(() => {
+    let isMounted = true
 
-    setUser({
-      displayName: displayName
-        .split(/[._-]/)
-        .filter(Boolean)
-        .map((part) => part[0]!.toUpperCase() + part.slice(1))
-        .join(' '),
-      email: normalizedEmail,
-      authProvider: 'Credentials',
-      role: 'Member',
-    })
+    const restoreSession = async () => {
+      const sessionToken = window.localStorage.getItem(
+        SESSION_TOKEN_STORAGE_KEY
+      )
+
+      if (!sessionToken) {
+        return
+      }
+
+      try {
+        const currentUser = await getCurrentUser(sessionToken)
+
+        if (!isMounted) {
+          return
+        }
+
+        if (!currentUser) {
+          window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY)
+          setUser(null)
+          return
+        }
+
+        setUser(mapApiUserToProfile(currentUser))
+      } catch {
+        if (!isMounted) {
+          return
+        }
+
+        window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY)
+        setUser(null)
+      }
+    }
+
+    void restoreSession()
+
+    return () => {
+      isMounted = false
+    }
+  }, [SESSION_TOKEN_STORAGE_KEY])
+
+  const signInWithCredentials = async (email: string, password: string) => {
+    const authResponse = await loginWithCredentials({ email, password })
+
+    window.localStorage.setItem(
+      SESSION_TOKEN_STORAGE_KEY,
+      authResponse.sessionToken
+    )
+    setUser(mapApiUserToProfile(authResponse.user))
+  }
+
+  const registerCredentialsUser = async (params: {
+    displayName: string
+    email: string
+    password: string
+  }) => {
+    const authResponse = await registerWithCredentials(params)
+
+    window.localStorage.setItem(
+      SESSION_TOKEN_STORAGE_KEY,
+      authResponse.sessionToken
+    )
+    setUser(mapApiUserToProfile(authResponse.user))
   }
 
   const signInWithProvider = (provider: UserProfile['authProvider']) => {
@@ -95,7 +155,18 @@ const App = () => {
     setUser(providerProfiles[provider])
   }
 
-  const signOut = () => {
+  const signOut = async () => {
+    const sessionToken = window.localStorage.getItem(SESSION_TOKEN_STORAGE_KEY)
+
+    if (sessionToken) {
+      try {
+        await logoutWithSessionToken(sessionToken)
+      } catch {
+        // Keep logout robust even if server session is already invalid.
+      }
+    }
+
+    window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY)
     setUser(null)
   }
 
@@ -176,7 +247,12 @@ const App = () => {
             />
             <Route
               path="/register"
-              element={<RegistrationPage user={user} />}
+              element={
+                <RegistrationPage
+                  user={user}
+                  onRegister={registerCredentialsUser}
+                />
+              }
             />
           </Routes>
         </Container>

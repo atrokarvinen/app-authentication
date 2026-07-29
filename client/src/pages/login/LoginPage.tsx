@@ -1,4 +1,5 @@
 import { Alert, Box, Link, Paper, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { AuthProvider, UserProfile } from '../../types/auth'
 import { LoginForm } from './LoginForm'
@@ -6,7 +7,7 @@ import styles from './LoginPage.module.css'
 
 type LoginPageProps = {
   user: UserProfile | null
-  onSignIn: (email: string) => void
+  onSignIn: (email: string, password: string) => Promise<void>
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
@@ -16,10 +17,18 @@ export const LoginPage = ({
   onProviderSignIn,
 }: LoginPageProps) => {
   const navigate = useNavigate()
+  const [authError, setAuthError] = useState<string | null>(null)
 
-  const handleSignIn = (email: string) => {
-    onSignIn(email)
-    navigate('/')
+  const handleSignIn = async (email: string, password: string) => {
+    try {
+      await onSignIn(email, password)
+      setAuthError(null)
+      navigate('/')
+    } catch (error) {
+      setAuthError(
+        error instanceof Error ? error.message : 'Failed to sign in.'
+      )
+    }
   }
 
   const handleProviderSignIn = (provider: AuthProvider) => {
@@ -47,6 +56,8 @@ export const LoginPage = ({
               current local session.
             </Alert>
           ) : null}
+
+          {authError ? <Alert severity="error">{authError}</Alert> : null}
 
           <LoginForm
             onSignIn={handleSignIn}

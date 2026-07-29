@@ -9,18 +9,26 @@ import type { AuthProvider } from '../../types/auth'
 import styles from './LoginForm.module.css'
 
 type LoginFormProps = {
-  onSignIn: (email: string) => void
+  onSignIn: (email: string, password: string) => Promise<void>
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
 export const LoginForm = ({ onSignIn, onProviderSignIn }: LoginFormProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onSignIn(email)
-    setPassword('')
+
+    setIsSubmitting(true)
+
+    try {
+      await onSignIn(email, password)
+      setPassword('')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -49,6 +57,8 @@ export const LoginForm = ({ onSignIn, onProviderSignIn }: LoginFormProps) => {
           variant="contained"
           size="large"
           startIcon={<LoginOutlinedIcon />}
+          disabled={isSubmitting}
+          loading={isSubmitting}
         >
           Sign in
         </Button>

@@ -26,7 +26,7 @@ type HomePageProps = {
   health: HealthResponse | null
   isLoading: boolean
   errorMessage: string | null
-  onSignOut: () => void
+  onSignOut: () => Promise<void>
 }
 
 export const HomePage = ({

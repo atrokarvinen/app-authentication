@@ -1,5 +1,7 @@
+secrets.txt
+todo.txt
+
 node_modules
 dist
 
-secrets.txt
 server/.env
