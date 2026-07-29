@@ -1,6 +1,6 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlineOutlined'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import HubIcon from '@mui/icons-material/Hub'
 import PendingIcon from '@mui/icons-material/Pending'
@@ -31,8 +31,12 @@ export const HealthStatusCard = ({
     <Card elevation={0} className={styles.cardRoot}>
       <CardContent className={styles.cardContent}>
         <Stack spacing={3}>
-          <Stack direction="row" justifyContent="space-between" spacing={2}>
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: 'space-between' }}
+          >
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
               <HealthAndSafetyIcon color="primary" />
               <Typography variant="h5">API health</Typography>
             </Stack>
@@ -44,7 +48,7 @@ export const HealthStatusCard = ({
           </Stack>
 
           {isLoading ? (
-            <Stack direction="row" spacing={1.5} alignItems="center">
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
               <CircularProgress size={20} />
               <Typography color="text.secondary">
                 Checking backend connection...
@@ -63,19 +67,31 @@ export const HealthStatusCard = ({
 
           {health ? (
             <Stack spacing={2}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack
+                direction="row"
+                spacing={1.5}
+                sx={{ alignItems: 'center' }}
+              >
                 <CheckCircleIcon color="success" />
                 <Typography>
                   Status: <strong>{health.status}</strong>
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack
+                direction="row"
+                spacing={1.5}
+                sx={{ alignItems: 'center' }}
+              >
                 <HubIcon color="secondary" />
                 <Typography>
                   Service: <strong>{health.service}</strong>
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack
+                direction="row"
+                spacing={1.5}
+                sx={{ alignItems: 'center' }}
+              >
                 <AccessTimeIcon color="action" />
                 <Typography>
                   Checked at:{' '}

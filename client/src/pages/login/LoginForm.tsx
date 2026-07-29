@@ -64,7 +64,7 @@ export const LoginForm = ({ onSignIn, onProviderSignIn }: LoginFormProps) => {
         </Button>
       </Stack>
 
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <Divider className={styles.growDivider} />
         <Typography variant="body2" color="text.secondary">
           or continue with

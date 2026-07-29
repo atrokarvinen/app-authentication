@@ -33,79 +33,63 @@ export class PrismaRegisterRepository implements IRegisterRepository {
   async createRegisteredUser(
     params: CreateRegisteredUserArgs
   ): Promise<DbUserProfile> {
-    return this.prismaClient.$transaction(async (tx) => {
-      const role = await tx.role.upsert({
-        where: { name: 'member' },
-        update: {},
-        create: {
-          name: 'member',
-          description: 'Default application member role.',
-        },
-      })
+    const role = await this.prismaClient.role.upsert({
+      where: { name: 'member' },
+      update: {},
+      create: {
+        name: 'member',
+        description: 'Default application member role.',
+      },
+    })
 
-      const user = await tx.user.create({
-        data: {
-          status: UserStatus.ACTIVE,
-          displayName: params.displayName,
-          lastLoginAt: params.now,
-          emails: {
-            create: {
-              email: params.email,
-              isPrimary: true,
-              isVerified: true,
-              verificationSource: 'LOCAL',
-              verifiedAt: params.now,
-            },
-          },
-          identities: {
-            create: {
-              provider: AuthProvider.CREDENTIALS,
-              providerUserId: params.email,
-              usernameOrLogin: params.email,
-              passwordHash: params.passwordHash,
-              passwordAlgo: 'scrypt',
-              passwordUpdatedAt: params.now,
-            },
+    return this.prismaClient.user.create({
+      data: {
+        status: UserStatus.ACTIVE,
+        displayName: params.displayName,
+        lastLoginAt: params.now,
+        emails: {
+          create: {
+            email: params.email,
+            isPrimary: true,
+            isVerified: true,
+            verificationSource: 'LOCAL',
+            verifiedAt: params.now,
           },
         },
-        include: {
-          emails: true,
-          roles: {
-            include: {
-              role: true,
+        identities: {
+          create: {
+            provider: AuthProvider.CREDENTIALS,
+            providerUserId: params.email,
+            usernameOrLogin: params.email,
+            passwordHash: params.passwordHash,
+            passwordAlgo: 'scrypt',
+            passwordUpdatedAt: params.now,
+          },
+        },
+        roles: {
+          create: {
+            role: {
+              connect: { id: role.id },
             },
           },
         },
-      })
-
-      await tx.userRole.create({
-        data: {
-          userId: user.id,
-          roleId: role.id,
-        },
-      })
-
-      await tx.session.create({
-        data: {
-          userId: user.id,
-          refreshTokenHash: params.sessionTokenHash,
-          expiresAt: params.expiresAt,
-          ipAddress: params.ipAddress,
-          userAgent: params.userAgent,
-        },
-      })
-
-      return tx.user.findUniqueOrThrow({
-        where: { id: user.id },
-        include: {
-          emails: true,
-          roles: {
-            include: {
-              role: true,
-            },
+        sessions: {
+          create: {
+            refreshTokenHash: params.sessionTokenHash,
+            expiresAt: params.expiresAt,
+            ipAddress: params.ipAddress,
+            userAgent: params.userAgent,
           },
         },
-      })
+      },
+      include: {
+        emails: true,
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     })
   }
 }

@@ -91,7 +91,11 @@ export const HomePage = ({
 
             {user ? (
               <Stack spacing={2.5}>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ alignItems: 'center' }}
+                >
                   <Avatar className={styles.profileAvatar}>
                     {user.displayName
                       .split(' ')
