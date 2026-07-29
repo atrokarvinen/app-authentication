@@ -18,6 +18,7 @@ import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { AuthProvider, UserProfile } from '../types/auth'
+import styles from './LoginPage.module.css'
 
 type LoginPageProps = {
   user: UserProfile | null
@@ -48,33 +49,11 @@ export const LoginPage = ({
   }
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        placeItems: 'center',
-        minHeight: { md: 'calc(100vh - 210px)' },
-      }}
-    >
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          maxWidth: 560,
-          p: { xs: 3, md: 4 },
-          borderRadius: 6,
-          border: '1px solid',
-          borderColor: 'divider',
-          background:
-            'linear-gradient(180deg, rgba(255,250,240,0.96) 0%, rgba(248,244,236,0.9) 100%)',
-          boxShadow: '0 24px 60px rgba(71, 49, 17, 0.12)',
-        }}
-      >
+    <Box className={styles.loginPageShell}>
+      <Paper elevation={0} className={styles.loginPaper}>
         <Stack spacing={3}>
           <Box>
-            <Typography
-              variant="h3"
-              sx={{ fontFamily: "Georgia, 'Times New Roman', serif", mb: 1.5 }}
-            >
+            <Typography variant="h3" className={styles.loginTitle}>
               Login
             </Typography>
             <Typography color="text.secondary">
@@ -120,11 +99,11 @@ export const LoginPage = ({
           </Stack>
 
           <Stack direction="row" spacing={1} alignItems="center">
-            <Divider sx={{ flex: 1 }} />
+            <Divider className={styles.growDivider} />
             <Typography variant="body2" color="text.secondary">
               or continue with
             </Typography>
-            <Divider sx={{ flex: 1 }} />
+            <Divider className={styles.growDivider} />
           </Stack>
 
           <Stack spacing={1.5}>

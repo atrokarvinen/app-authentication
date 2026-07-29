@@ -19,6 +19,7 @@ import { Link as RouterLink } from 'react-router'
 import { HealthStatusCard } from '../components/HealthStatusCard'
 import type { HealthResponse } from '../types/api'
 import type { UserProfile } from '../types/auth'
+import styles from './HomePage.module.css'
 
 type HomePageProps = {
   user: UserProfile | null
@@ -37,39 +38,21 @@ export const HomePage = ({
 }: HomePageProps) => {
   return (
     <Stack spacing={3.5}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: { xs: 3, md: 5 },
-          borderRadius: 6,
-          border: '1px solid',
-          borderColor: 'divider',
-          background:
-            'linear-gradient(135deg, rgba(255,250,240,0.94) 0%, rgba(241,248,244,0.92) 100%)',
-          boxShadow: '0 24px 60px rgba(71, 49, 17, 0.12)',
-        }}
-      >
+      <Paper elevation={0} className={styles.heroPaper}>
         <Stack spacing={3}>
           <Chip
             label={user ? 'Logged in' : 'Signed out'}
             color={user ? 'secondary' : 'default'}
             variant="outlined"
-            sx={{ alignSelf: 'flex-start', letterSpacing: '0.14em' }}
+            className={styles.statusChip}
           />
           <Box>
-            <Typography
-              variant="h1"
-              sx={{ maxWidth: '10ch', mb: 2, textWrap: 'balance' }}
-            >
+            <Typography variant="h1" className={styles.title}>
               {user
                 ? `Welcome back, ${user.displayName}.`
                 : 'Authentication starter dashboard.'}
             </Typography>
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={{ maxWidth: 760 }}
-            >
+            <Typography variant="h6" color="text.secondary" className={styles.summary}>
               {user
                 ? 'Your starter profile is active below. Replace this local state with backend-backed authentication when you wire the real auth flow.'
                 : 'No user session is active. Use the login page to test credentials or social sign-in buttons.'}
@@ -91,39 +74,21 @@ export const HomePage = ({
         </Stack>
       </Paper>
 
-      <Box
-        sx={{
-          display: 'grid',
-          gap: 3,
-          gridTemplateColumns: { xs: '1fr', md: '1.2fr 1fr' },
-        }}
-      >
+      <Box className={styles.dashboardGrid}>
         <HealthStatusCard
           health={health}
           isLoading={isLoading}
           errorMessage={errorMessage}
         />
 
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3.5,
-            borderRadius: 6,
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: 'rgba(255, 252, 247, 0.78)',
-            boxShadow: '0 24px 60px rgba(71, 49, 17, 0.12)',
-          }}
-        >
+        <Paper elevation={0} className={styles.profilePaper}>
           <Stack spacing={2.5}>
             <Typography variant="h5">Profile</Typography>
 
             {user ? (
               <Stack spacing={2.5}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <Avatar
-                    sx={{ bgcolor: 'secondary.main', width: 52, height: 52 }}
-                  >
+                  <Avatar className={styles.profileAvatar}>
                     {user.displayName
                       .split(' ')
                       .map((part) => part[0])

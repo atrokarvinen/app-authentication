@@ -1,0 +1,28 @@
+.appRoot {
+  min-height: 100vh;
+}
+
+.appBar {
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(64, 45, 31, 0.16);
+  background-color: rgba(246, 239, 227, 0.84);
+}
+
+.toolbar {
+  gap: 12px;
+  padding-block: 10px;
+}
+
+.navStack {
+  margin-left: auto;
+}
+
+.mainContent {
+  padding-block: 32px;
+}
+
+@media (min-width: 900px) {
+  .mainContent {
+    padding-block: 56px;
+  }
+}

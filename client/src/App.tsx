@@ -9,6 +9,7 @@ import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import type { HealthResponse } from './types/api'
 import type { UserProfile } from './types/auth'
+import styles from './App.module.css'
 
 const App = () => {
   const [health, setHealth] = useState<HealthResponse | null>(null)
@@ -98,27 +99,22 @@ const App = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh' }}>
+    <Box className={styles.appRoot}>
       <AppBar
         position="sticky"
         color="transparent"
         elevation={0}
-        sx={{
-          backdropFilter: 'blur(14px)',
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          backgroundColor: 'rgba(246, 239, 227, 0.84)',
-        }}
+        className={styles.appBar}
       >
         <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ gap: 1.5, py: 1.25 }}>
+          <Toolbar disableGutters className={styles.toolbar}>
             <Chip
               icon={<AccountCircleOutlinedIcon />}
               label={user ? user.displayName : 'Guest mode'}
               color={user ? 'secondary' : 'default'}
               variant={user ? 'filled' : 'outlined'}
             />
-            <Stack direction="row" spacing={1} sx={{ ml: 'auto' }}>
+            <Stack direction="row" spacing={1} className={styles.navStack}>
               <Chip
                 clickable
                 component={NavLink}
@@ -152,7 +148,7 @@ const App = () => {
         </Container>
       </AppBar>
 
-      <Box component="main" sx={{ py: { xs: 4, md: 7 } }}>
+      <Box component="main" className={styles.mainContent}>
         <Container maxWidth="lg">
           <Routes>
             <Route

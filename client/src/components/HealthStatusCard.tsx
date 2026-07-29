@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import type { HealthResponse } from '../types/api'
+import styles from './HealthStatusCard.module.css'
 
 type HealthStatusCardProps = {
   health: HealthResponse | null
@@ -27,18 +28,8 @@ export const HealthStatusCard = ({
   errorMessage,
 }: HealthStatusCardProps) => {
   return (
-    <Card
-      elevation={0}
-      sx={{
-        height: '100%',
-        borderRadius: 6,
-        border: '1px solid',
-        borderColor: 'divider',
-        backgroundColor: 'rgba(255, 252, 247, 0.78)',
-        boxShadow: '0 24px 60px rgba(71, 49, 17, 0.12)',
-      }}
-    >
-      <CardContent sx={{ p: 3.5 }}>
+    <Card elevation={0} className={styles.cardRoot}>
+      <CardContent className={styles.cardContent}>
         <Stack spacing={3}>
           <Stack direction="row" justifyContent="space-between" spacing={2}>
             <Stack direction="row" spacing={1.5} alignItems="center">

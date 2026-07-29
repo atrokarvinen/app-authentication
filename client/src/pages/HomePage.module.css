@@ -1,0 +1,52 @@
+.heroPaper {
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(64, 45, 31, 0.16);
+  background: linear-gradient(135deg, rgba(255, 250, 240, 0.94) 0%, rgba(241, 248, 244, 0.92) 100%);
+  box-shadow: 0 24px 60px rgba(71, 49, 17, 0.12);
+}
+
+.statusChip {
+  align-self: flex-start;
+  letter-spacing: 0.14em;
+}
+
+.title {
+  max-width: 10ch;
+  margin-bottom: 16px;
+  text-wrap: balance;
+}
+
+.summary {
+  max-width: 760px;
+}
+
+.dashboardGrid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+.profilePaper {
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(64, 45, 31, 0.16);
+  background-color: rgba(255, 252, 247, 0.78);
+  box-shadow: 0 24px 60px rgba(71, 49, 17, 0.12);
+}
+
+.profileAvatar {
+  background-color: #476c5e;
+  width: 52px;
+  height: 52px;
+}
+
+@media (min-width: 900px) {
+  .heroPaper {
+    padding: 40px;
+  }
+
+  .dashboardGrid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
