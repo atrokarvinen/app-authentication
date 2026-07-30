@@ -6,17 +6,20 @@ import {
 import { SystemClock, type IClock } from '../../../../lib/clock'
 import { toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
-import { MeRepository, type IMeRepository } from './meRepository'
-import type { MeArgs, MeResult } from './types'
+import {
+  CurrentUserRepository,
+  type ICurrentUserRepository,
+} from './currentUserRepository'
+import type { CurrentUserArgs, CurrentUserResult } from './types'
 
-export class MeService {
+export class CurrentUserService {
   constructor(
-    private readonly repository: IMeRepository,
+    private readonly repository: ICurrentUserRepository,
     private readonly cryptoHelper: IAuthCryptoHelper,
     private readonly clock: IClock
   ) {}
 
-  async getCurrentUser(params: MeArgs): Promise<MeResult> {
+  async getCurrentUser(params: CurrentUserArgs): Promise<CurrentUserResult> {
     if (!params.sessionToken) {
       throw new AuthServiceError(
         'Not authenticated.',
@@ -41,7 +44,7 @@ export class MeService {
     const provider =
       session.user.identities[0]?.provider || AuthProvider.CREDENTIALS
 
-    const result: MeResult = {
+    const result: CurrentUserResult = {
       result: {
         user: toUserDto({
           user: session.user,
@@ -55,12 +58,14 @@ export class MeService {
   }
 }
 
-const meService = new MeService(
-  new MeRepository(),
+const currentUserService = new CurrentUserService(
+  new CurrentUserRepository(),
   new AuthCryptoHelper(),
   new SystemClock()
 )
 
-export function getCurrentUser(params: MeArgs): Promise<MeResult> {
-  return meService.getCurrentUser(params)
+export function getCurrentUser(
+  params: CurrentUserArgs
+): Promise<CurrentUserResult> {
+  return currentUserService.getCurrentUser(params)
 }

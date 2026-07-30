@@ -7,14 +7,14 @@ type ActiveSessionRecord = {
   user: DbUserWithIdentities
 } | null
 
-export interface IMeRepository {
+export interface ICurrentUserRepository {
   findActiveSessionByTokenHash(
     refreshTokenHash: string,
     now: Date
   ): Promise<ActiveSessionRecord>
 }
 
-export class MeRepository implements IMeRepository {
+export class CurrentUserRepository implements ICurrentUserRepository {
   constructor(private readonly prismaClient: PrismaClient = prisma) {}
 
   async findActiveSessionByTokenHash(

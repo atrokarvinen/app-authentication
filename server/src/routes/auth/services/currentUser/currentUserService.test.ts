@@ -3,11 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { IAuthCryptoHelper } from '../../../../lib/authCryptoHelper'
 import type { IClock } from '../../../../lib/clock'
-import type { IMeRepository } from './meRepository'
-import { MeService } from './meService'
+import type { ICurrentUserRepository } from './currentUserRepository'
+import { CurrentUserService } from './currentUserService'
 
 function createService() {
-  const repository: IMeRepository = {
+  const repository: ICurrentUserRepository = {
     findActiveSessionByTokenHash: vi.fn(),
   }
 
@@ -22,13 +22,17 @@ function createService() {
     now: vi.fn(() => new Date('2026-01-01T10:00:00.000Z')),
   }
 
-  const meService = new MeService(repository, cryptoHelper, clock)
+  const currentUserService = new CurrentUserService(
+    repository,
+    cryptoHelper,
+    clock
+  )
 
   return {
     repository,
     cryptoHelper,
     clock,
-    getCurrentUser: meService.getCurrentUser.bind(meService),
+    getCurrentUser: currentUserService.getCurrentUser.bind(currentUserService),
   }
 }
 

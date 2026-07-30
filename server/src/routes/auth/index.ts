@@ -2,13 +2,13 @@ import { Router } from 'express'
 import { env } from '../../config/env'
 import { getLogger } from '../../lib/logging/httpLogger'
 import { getSessionTokenFromRequest } from './services/authShared'
+import { getCurrentUser } from './services/currentUser/currentUserService'
+import type { CurrentUserResponseBody } from './services/currentUser/types'
 import { deleteUser } from './services/delete/deleteService'
 import { AuthServiceError } from './services/errors'
 import { loginUser } from './services/login/loginService'
 import { logoutUser } from './services/logout/logoutService'
 import type { LogoutResponseBody } from './services/logout/types'
-import { getCurrentUser } from './services/me/meService'
-import type { MeResponseBody } from './services/me/types'
 import { registerUser } from './services/register/registerService'
 import type { ErrorResponse } from './types/http'
 
@@ -93,7 +93,7 @@ authRouter.get('/me', async (request, response) => {
   try {
     const { result, logMeta } = await getCurrentUser({ sessionToken })
 
-    response.json(result as MeResponseBody)
+    response.json(result as CurrentUserResponseBody)
     log.info(logMeta, 'auth.me.success')
   } catch (error) {
     if (error instanceof AuthServiceError) {
