@@ -1,7 +1,3 @@
-export type GoogleTokenClient = {
-  requestAccessToken: () => void
-}
-
 export type GoogleIdentityServices = {
   accounts: {
     oauth2: {
@@ -14,8 +10,12 @@ export type GoogleIdentityServices = {
   }
 }
 
-export type GoogleTokenResponse = {
+type GoogleTokenResponse = {
   access_token?: string
   error?: string
   error_description?: string
+}
+
+type GoogleTokenClient = {
+  requestAccessToken: () => void
 }

@@ -9,7 +9,7 @@ type DeleteUserResult = {
   logMeta: Record<string, unknown>
 }
 
-export class DeleteService {
+class DeleteService {
   constructor(private readonly repository: IDeleteRepository) {}
 
   async deleteUser(params: DeleteUserArgs): Promise<DeleteUserResult> {

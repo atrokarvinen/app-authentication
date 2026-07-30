@@ -17,7 +17,7 @@ import type { GoogleSignInArgs, GoogleSignInResult } from './types'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
-export class GoogleSignInService {
+class GoogleSignInService {
   constructor(
     private readonly prismaClient: PrismaClient,
     private readonly cryptoHelper: IAuthCryptoHelper,

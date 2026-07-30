@@ -35,3 +35,9 @@ export type GoogleUserInfoResponse = {
   picture?: string
   sub?: string
 }
+
+export type ResolvedGoogleIdentity = {
+  email: string
+  providerUserId: string
+  profile: GoogleUserInfoResponse
+}

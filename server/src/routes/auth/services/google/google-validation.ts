@@ -2,13 +2,7 @@ import { normalizeEmail } from '../authShared'
 import { AuthServiceError } from '../errors'
 import { fetchGoogleTokenInfo, fetchGoogleUserInfo } from './google-api'
 import { isVerifiedEmail } from './google-helpers'
-import type { GoogleUserInfoResponse } from './types'
-
-export type ResolvedGoogleIdentity = {
-  email: string
-  providerUserId: string
-  profile: GoogleUserInfoResponse
-}
+import type { ResolvedGoogleIdentity } from './types'
 
 export function getAccessTokenFromBody(body: {
   accessToken?: unknown
