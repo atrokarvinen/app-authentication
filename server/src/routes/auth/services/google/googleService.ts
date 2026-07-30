@@ -9,82 +9,11 @@ import { SystemClock, type IClock } from '../../../../lib/clock'
 import { prisma } from '../../../../lib/prisma'
 import { normalizeEmail, toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
+import { fetchGoogleTokenInfo, fetchGoogleUserInfo } from './google-api'
+import { buildDisplayName, isVerifiedEmail } from './google-helpers'
 import type { GoogleSignInArgs, GoogleSignInResult } from './types'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
-
-type GoogleTokenInfoResponse = {
-  aud?: string
-  email?: string
-  email_verified?: string | boolean
-  sub?: string
-}
-
-type GoogleUserInfoResponse = {
-  email?: string
-  email_verified?: boolean
-  name?: string
-  given_name?: string
-  picture?: string
-  sub?: string
-}
-
-async function fetchGoogleTokenInfo(
-  accessToken: string
-): Promise<GoogleTokenInfoResponse> {
-  const response = await fetch(
-    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(accessToken)}`
-  )
-
-  if (!response.ok) {
-    throw new AuthServiceError(
-      'Google sign-in token could not be verified.',
-      401,
-      'auth.google.invalid_token'
-    )
-  }
-
-  return (await response.json()) as GoogleTokenInfoResponse
-}
-
-async function fetchGoogleUserInfo(
-  accessToken: string
-): Promise<GoogleUserInfoResponse> {
-  const response = await fetch(
-    'https://www.googleapis.com/oauth2/v3/userinfo',
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  )
-
-  if (!response.ok) {
-    throw new AuthServiceError(
-      'Google account profile could not be loaded.',
-      502,
-      'auth.google.profile_unavailable'
-    )
-  }
-
-  return (await response.json()) as GoogleUserInfoResponse
-}
-
-function isVerifiedEmail(value: string | boolean | undefined): boolean {
-  return value === true || value === 'true'
-}
-
-function buildDisplayName(
-  profile: GoogleUserInfoResponse,
-  email: string
-): string {
-  return (
-    profile.name?.trim() ||
-    profile.given_name?.trim() ||
-    email.split('@')[0] ||
-    'Google User'
-  )
-}
 
 export class GoogleSignInService {
   constructor(

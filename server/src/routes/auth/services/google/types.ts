@@ -19,3 +19,19 @@ type GoogleSignInResponseBody = {
   user: UserDto
   sessionToken: string
 }
+
+export type GoogleTokenInfoResponse = {
+  aud?: string
+  email?: string
+  email_verified?: string | boolean
+  sub?: string
+}
+
+export type GoogleUserInfoResponse = {
+  email?: string
+  email_verified?: boolean
+  name?: string
+  given_name?: string
+  picture?: string
+  sub?: string
+}
