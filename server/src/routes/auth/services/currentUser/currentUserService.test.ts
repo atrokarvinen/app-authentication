@@ -140,4 +140,39 @@ describe('getCurrentUser', () => {
 
     expect(result.result.user.authProvider).toBe('Credentials')
   })
+
+  it('prefers google when a google identity exists', async () => {
+    const { repository, cryptoHelper, getCurrentUser } = createService()
+
+    vi.mocked(cryptoHelper.hashSessionToken).mockReturnValue('session-hash')
+    vi.mocked(repository.findActiveSessionByTokenHash).mockResolvedValue({
+      user: {
+        id: 'user-1',
+        displayName: 'Test User',
+        status: UserStatus.ACTIVE,
+        emails: [
+          {
+            email: 'person@example.com',
+            isPrimary: true,
+            createdAt: new Date('2025-01-01T00:00:00.000Z'),
+          },
+        ],
+        roles: [{ role: { name: 'member' } }],
+        identities: [
+          {
+            provider: AuthProvider.CREDENTIALS,
+            passwordHash: 'stored-hash',
+          },
+          {
+            provider: AuthProvider.GOOGLE,
+            passwordHash: null,
+          },
+        ],
+      },
+    })
+
+    const result = await getCurrentUser({ sessionToken: 'raw-token' })
+
+    expect(result.result.user.authProvider).toBe('Google')
+  })
 })

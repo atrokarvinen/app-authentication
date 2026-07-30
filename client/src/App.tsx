@@ -7,6 +7,7 @@ import { NavLink, Route, Routes } from 'react-router'
 import {
   getCurrentUser,
   loginWithCredentials,
+  loginWithGoogle,
   logoutWithSessionToken,
   mapApiUserToProfile,
   registerWithCredentials,
@@ -102,6 +103,16 @@ const App = () => {
 
   const signInWithCredentials = async (email: string, password: string) => {
     const authResponse = await loginWithCredentials({ email, password })
+
+    window.localStorage.setItem(
+      SESSION_TOKEN_STORAGE_KEY,
+      authResponse.sessionToken
+    )
+    setUser(mapApiUserToProfile(authResponse.user))
+  }
+
+  const signInWithGoogle = async (accessToken: string) => {
+    const authResponse = await loginWithGoogle({ accessToken })
 
     window.localStorage.setItem(
       SESSION_TOKEN_STORAGE_KEY,
@@ -241,6 +252,7 @@ const App = () => {
                 <LoginPage
                   user={user}
                   onSignIn={signInWithCredentials}
+                  onGoogleSignIn={signInWithGoogle}
                   onProviderSignIn={signInWithProvider}
                 />
               }

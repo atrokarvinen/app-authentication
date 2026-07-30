@@ -58,6 +58,12 @@ export async function loginWithCredentials(params: {
   return postAuthRequest<AuthResponse>('login', params)
 }
 
+export async function loginWithGoogle(params: {
+  accessToken: string
+}): Promise<AuthResponse> {
+  return postAuthRequest<AuthResponse>('google', params)
+}
+
 export async function registerWithCredentials(params: {
   displayName: string
   email: string

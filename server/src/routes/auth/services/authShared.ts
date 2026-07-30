@@ -8,6 +8,36 @@ export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase()
 }
 
+export function resolvePreferredProvider(user: {
+  identities: Array<{ provider: AuthProvider }>
+}): AuthProvider {
+  if (
+    user.identities.some(
+      (identity) => identity.provider === AuthProvider.GOOGLE
+    )
+  ) {
+    return AuthProvider.GOOGLE
+  }
+
+  if (
+    user.identities.some(
+      (identity) => identity.provider === AuthProvider.FACEBOOK
+    )
+  ) {
+    return AuthProvider.FACEBOOK
+  }
+
+  if (
+    user.identities.some(
+      (identity) => identity.provider === AuthProvider.MICROSOFT
+    )
+  ) {
+    return AuthProvider.MICROSOFT
+  }
+
+  return user.identities[0]?.provider || AuthProvider.CREDENTIALS
+}
+
 function providerToClient(provider: AuthProvider): UserDto['authProvider'] {
   switch (provider) {
     case AuthProvider.CREDENTIALS:

@@ -8,12 +8,14 @@ import styles from './LoginPage.module.css'
 type LoginPageProps = {
   user: UserProfile | null
   onSignIn: (email: string, password: string) => Promise<void>
+  onGoogleSignIn: (accessToken: string) => Promise<void>
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
 export const LoginPage = ({
   user,
   onSignIn,
+  onGoogleSignIn,
   onProviderSignIn,
 }: LoginPageProps) => {
   const navigate = useNavigate()
@@ -34,6 +36,20 @@ export const LoginPage = ({
   const handleProviderSignIn = (provider: AuthProvider) => {
     onProviderSignIn(provider)
     navigate('/')
+  }
+
+  const handleGoogleSignIn = async (accessToken: string) => {
+    try {
+      await onGoogleSignIn(accessToken)
+      setAuthError(null)
+      navigate('/')
+    } catch (error) {
+      setAuthError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to sign in with Google.'
+      )
+    }
   }
 
   return (
@@ -61,6 +77,7 @@ export const LoginPage = ({
 
           <LoginForm
             onSignIn={handleSignIn}
+            onGoogleSignIn={handleGoogleSignIn}
             onProviderSignIn={handleProviderSignIn}
           />
 

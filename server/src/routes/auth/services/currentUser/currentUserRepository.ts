@@ -1,4 +1,4 @@
-import { AuthProvider, type PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 
 import { prisma } from '../../../../lib/prisma'
 import type { DbUserWithIdentities } from '../../types/database'
@@ -33,9 +33,7 @@ export class CurrentUserRepository implements ICurrentUserRepository {
         user: {
           include: {
             emails: true,
-            identities: {
-              where: { provider: AuthProvider.CREDENTIALS },
-            },
+            identities: true,
             roles: {
               include: {
                 role: true,

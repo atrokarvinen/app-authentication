@@ -1,10 +1,9 @@
-import { AuthProvider } from '@prisma/client'
 import {
   AuthCryptoHelper,
   type IAuthCryptoHelper,
 } from '../../../../lib/authCryptoHelper'
 import { SystemClock, type IClock } from '../../../../lib/clock'
-import { toUserDto } from '../authShared'
+import { resolvePreferredProvider, toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
 import {
   CurrentUserRepository,
@@ -41,8 +40,7 @@ export class CurrentUserService {
       )
     }
 
-    const provider =
-      session.user.identities[0]?.provider || AuthProvider.CREDENTIALS
+    const provider = resolvePreferredProvider(session.user)
 
     const result: CurrentUserResult = {
       result: {
