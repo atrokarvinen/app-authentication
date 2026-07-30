@@ -17,25 +17,22 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
 import { HealthStatusCard } from '../../components/HealthStatusCard'
+import { useAuth } from '../../context/AuthContext'
 import type { HealthResponse } from '../../types/api'
-import type { UserProfile } from '../../types/auth'
 import styles from './HomePage.module.css'
 
 type HomePageProps = {
-  user: UserProfile | null
   health: HealthResponse | null
   isLoading: boolean
   errorMessage: string | null
-  onSignOut: () => Promise<void>
 }
 
 export const HomePage = ({
-  user,
   health,
   isLoading,
   errorMessage,
-  onSignOut,
 }: HomePageProps) => {
+  const { user, signOut } = useAuth()
   return (
     <Stack spacing={3.5}>
       <Paper elevation={0} className={styles.heroPaper}>
@@ -70,7 +67,7 @@ export const HomePage = ({
               {user ? 'Switch account' : 'Go to login'}
             </Button>
             {user ? (
-              <Button variant="text" color="inherit" onClick={onSignOut}>
+              <Button variant="text" color="inherit" onClick={signOut}>
                 Sign out
               </Button>
             ) : null}

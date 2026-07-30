@@ -1,31 +1,24 @@
 import { Alert, Box, Link, Paper, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
-import type { AuthProvider, UserProfile } from '../../types/auth'
+import { useAuth } from '../../context/AuthContext'
 import { LoginForm } from './LoginForm'
 import styles from './LoginPage.module.css'
 
-type LoginPageProps = {
-  user: UserProfile | null
-  onSignIn: (email: string, password: string) => Promise<void>
-  onGoogleSignIn: (accessToken: string) => Promise<void>
-  onFacebookSignIn: (accessToken: string) => Promise<void>
-  onProviderSignIn: (provider: AuthProvider) => void
-}
-
-export const LoginPage = ({
-  user,
-  onSignIn,
-  onGoogleSignIn,
-  onFacebookSignIn,
-  onProviderSignIn,
-}: LoginPageProps) => {
+export const LoginPage = () => {
   const navigate = useNavigate()
+  const {
+    user,
+    signInWithCredentials,
+    signInWithGoogle,
+    signInWithFacebook,
+    signInWithProvider,
+  } = useAuth()
   const [authError, setAuthError] = useState<string | null>(null)
 
   const handleSignIn = async (email: string, password: string) => {
     try {
-      await onSignIn(email, password)
+      await signInWithCredentials(email, password)
       setAuthError(null)
       navigate('/')
     } catch (error) {
@@ -35,14 +28,16 @@ export const LoginPage = ({
     }
   }
 
-  const handleProviderSignIn = (provider: AuthProvider) => {
-    onProviderSignIn(provider)
+  const handleProviderSignIn = (
+    provider: Parameters<typeof signInWithProvider>[0]
+  ) => {
+    signInWithProvider(provider)
     navigate('/')
   }
 
   const handleGoogleSignIn = async (accessToken: string) => {
     try {
-      await onGoogleSignIn(accessToken)
+      await signInWithGoogle(accessToken)
       setAuthError(null)
       navigate('/')
     } catch (error) {
@@ -56,7 +51,7 @@ export const LoginPage = ({
 
   const handleFacebookSignIn = async (accessToken: string) => {
     try {
-      await onFacebookSignIn(accessToken)
+      await signInWithFacebook(accessToken)
       setAuthError(null)
       navigate('/')
     } catch (error) {

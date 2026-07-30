@@ -12,23 +12,12 @@ import {
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
-import type { UserProfile } from '../../types/auth'
+import { useAuth } from '../../context/AuthContext'
 import styles from './RegistrationPage.module.css'
 
-type RegistrationPageProps = {
-  user: UserProfile | null
-  onRegister: (params: {
-    displayName: string
-    email: string
-    password: string
-  }) => Promise<void>
-}
-
-export const RegistrationPage = ({
-  user,
-  onRegister,
-}: RegistrationPageProps) => {
+export const RegistrationPage = () => {
   const navigate = useNavigate()
+  const { user, register } = useAuth()
   const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -52,7 +41,7 @@ export const RegistrationPage = ({
     setIsSubmitting(true)
 
     try {
-      await onRegister({
+      await register({
         displayName,
         email,
         password,
