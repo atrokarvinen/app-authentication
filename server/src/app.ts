@@ -6,6 +6,7 @@ import { authRouter } from './routes/auth/index'
 import { healthRouter } from './routes/health'
 
 export const app = express()
+app.disable('x-powered-by')
 
 app.use(cors({ origin: env.clientOrigin }))
 app.use(httpLogger)
