@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   getCurrentUser,
   loginWithCredentials,
@@ -143,20 +143,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null)
   }
 
+  const contextValue = useMemo(
+    () => ({
+      user,
+      signInWithCredentials,
+      signInWithGoogle,
+      signInWithFacebook,
+      signInWithProvider,
+      register,
+      signOut,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user]
+  )
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        signInWithCredentials,
-        signInWithGoogle,
-        signInWithFacebook,
-        signInWithProvider,
-        register,
-        signOut,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   )
 }
 

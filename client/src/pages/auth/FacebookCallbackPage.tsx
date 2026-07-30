@@ -8,14 +8,17 @@ export const FacebookCallbackPage = () => {
   const navigate = useNavigate()
   const { signInWithFacebook } = useAuth()
 
-  const login = useCallback(async (code: string, state: string | null) => {
-    try {
-      await signInWithFacebook(code)
-      navigate('/')
-    } catch (error) {
-      console.error('Error during Facebook login:', error)
-    }
-  }, [])
+  const login = useCallback(
+    async (code: string) => {
+      try {
+        await signInWithFacebook(code)
+        navigate('/')
+      } catch (error) {
+        console.error('Error during Facebook login:', error)
+      }
+    },
+    [navigate, signInWithFacebook]
+  )
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -28,7 +31,7 @@ export const FacebookCallbackPage = () => {
       `Facebook OAuth callback received. code=${code}, state=${state}, error=${error}`
     )
 
-    login(code ?? '', state).finally(() => {
+    login(code ?? '').finally(() => {
       window.close()
     })
   }, [login])

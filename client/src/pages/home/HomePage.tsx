@@ -15,24 +15,51 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router'
+import { getHealthStatus } from '../../api/health'
 import { HealthStatusCard } from '../../components/HealthStatusCard'
 import { useAuth } from '../../context/AuthContext'
 import type { HealthResponse } from '../../types/api'
 import styles from './HomePage.module.css'
 
-type HomePageProps = {
-  health: HealthResponse | null
-  isLoading: boolean
-  errorMessage: string | null
-}
-
-export const HomePage = ({
-  health,
-  isLoading,
-  errorMessage,
-}: HomePageProps) => {
+export const HomePage = () => {
   const { user, signOut } = useAuth()
+
+  const [health, setHealth] = useState<HealthResponse | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadHealthStatus = async () => {
+      try {
+        const response = await getHealthStatus()
+        if (isMounted) {
+          setHealth(response)
+          setErrorMessage(null)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setErrorMessage(
+            error instanceof Error ? error.message : 'Unknown server error'
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void loadHealthStatus()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <Stack spacing={3.5}>
       <Paper elevation={0} className={styles.heroPaper}>
