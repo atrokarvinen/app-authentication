@@ -3,7 +3,7 @@ import MicrosoftIcon from '@mui/icons-material/Microsoft'
 import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
-import { FacebookSignInButton } from '../../components/auth/FacebookSignInButton'
+import { FacebookSignInButtonAlt } from '../../components/auth/FacebookSignInButtonAlt'
 import { GoogleSignInButtonReactOAuth } from '../../components/auth/GoogleSignInButton'
 import type { AuthProvider } from '../../types/auth'
 import styles from './LoginForm.module.css'
@@ -84,7 +84,7 @@ export const LoginForm = ({
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSignIn={onGoogleSignIn}
         />
-        <FacebookSignInButton
+        <FacebookSignInButtonAlt
           appId={import.meta.env.VITE_FACEBOOK_APP_ID}
           onSignIn={onFacebookSignIn}
         />
