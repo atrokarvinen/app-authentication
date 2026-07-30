@@ -5,6 +5,7 @@ import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import { GoogleSignInButton } from '../../components/auth/GoogleSignInButton'
+import { GoogleSignInButtonReactOAuth } from '../../components/auth/GoogleSignInButtonReactOAuth'
 import type { AuthProvider } from '../../types/auth'
 import styles from './LoginForm.module.css'
 
@@ -82,10 +83,10 @@ export const LoginForm = ({
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSignIn={onGoogleSignIn}
         />
-        {/* <GoogleSignInButtonReactOAuth
+        <GoogleSignInButtonReactOAuth
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSignIn={onGoogleSignIn}
-        /> */}
+        />
         <Button
           variant="outlined"
           size="large"

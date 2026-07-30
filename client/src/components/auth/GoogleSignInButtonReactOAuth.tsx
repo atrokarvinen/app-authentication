@@ -12,7 +12,7 @@ type InnerProps = {
   onSignIn: (accessToken: string) => Promise<void>
 }
 
-function GoogleSignInButtonReactOAuthInner({ onSignIn }: InnerProps) {
+const GoogleSignInButtonReactOAuthInner = ({ onSignIn }: InnerProps) => {
   const onSignInRef = useRef(onSignIn)
   const [isSigningIn, setIsSigningIn] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -78,7 +78,7 @@ function GoogleSignInButtonReactOAuthInner({ onSignIn }: InnerProps) {
   )
 }
 
-export function GoogleSignInButtonReactOAuth({ clientId, onSignIn }: Props) {
+export const GoogleSignInButtonReactOAuth = ({ clientId, onSignIn }: Props) => {
   if (!clientId) {
     return (
       <Button
