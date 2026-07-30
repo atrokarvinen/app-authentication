@@ -82,6 +82,10 @@ export const LoginForm = ({
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSignIn={onGoogleSignIn}
         />
+        {/* <GoogleSignInButtonReactOAuth
+          clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+          onSignIn={onGoogleSignIn}
+        /> */}
         <Button
           variant="outlined"
           size="large"

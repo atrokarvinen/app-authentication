@@ -1,150 +1,65 @@
 import GoogleIcon from '@mui/icons-material/Google'
 import { Button, Stack, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+import type { GoogleTokenClient } from './types'
+import { useGoogleIdentityScript } from './useGoogleIdentityScript'
 
-type GoogleTokenClient = {
-  requestAccessToken: () => void
-}
-
-type GoogleIdentityServices = {
-  accounts: {
-    oauth2: {
-      initTokenClient: (config: {
-        client_id: string
-        scope: string
-        callback: (response: GoogleTokenResponse) => void
-      }) => GoogleTokenClient
-    }
-  }
-}
-
-type GoogleTokenResponse = {
-  access_token?: string
-  error?: string
-  error_description?: string
-}
-
-declare global {
-  interface Window {
-    google?: GoogleIdentityServices
-  }
-}
-
-type GoogleSignInButtonProps = {
+type Props = {
   clientId?: string
   onSignIn: (accessToken: string) => Promise<void>
 }
 
-const GOOGLE_SCRIPT_ID = 'google-identity-services-client'
-const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client'
-
-export const GoogleSignInButton = ({
-  clientId,
-  onSignIn,
-}: GoogleSignInButtonProps) => {
+export const GoogleSignInButton = ({ clientId, onSignIn }: Props) => {
   const tokenClientRef = useRef<GoogleTokenClient | null>(null)
   const onSignInRef = useRef(onSignIn)
-  const [isLoadingScript, setIsLoadingScript] = useState(false)
   const [isSigningIn, setIsSigningIn] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { isLoadingScript, isScriptReady } = useGoogleIdentityScript({
+    enabled: Boolean(clientId),
+    onScriptError: setErrorMessage,
+  })
 
   useEffect(() => {
     onSignInRef.current = onSignIn
   }, [onSignIn])
 
   useEffect(() => {
-    if (!clientId) {
-      setErrorMessage('Google sign-in is not configured.')
+    if (!clientId || !isScriptReady || !window.google) {
+      tokenClientRef.current = null
       return
     }
 
-    if (typeof window === 'undefined') {
-      return
-    }
+    tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'openid email profile',
+      callback: async (response) => {
+        if (response.error) {
+          setIsSigningIn(false)
+          setErrorMessage(
+            response.error_description || 'Google sign-in was cancelled.'
+          )
+          return
+        }
 
-    let isCancelled = false
+        if (!response.access_token) {
+          setIsSigningIn(false)
+          setErrorMessage('Google sign-in did not return an access token.')
+          return
+        }
 
-    const initializeClient = () => {
-      if (!window.google || !clientId || isCancelled) {
-        return
-      }
-
-      tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
-        scope: 'openid email profile',
-        callback: async (response) => {
-          if (response.error) {
-            setIsSigningIn(false)
-            setErrorMessage(
-              response.error_description || 'Google sign-in was cancelled.'
-            )
-            return
-          }
-
-          if (!response.access_token) {
-            setIsSigningIn(false)
-            setErrorMessage('Google sign-in did not return an access token.')
-            return
-          }
-
-          try {
-            await onSignInRef.current(response.access_token)
-            setErrorMessage(null)
-          } catch (error) {
-            setErrorMessage(
-              error instanceof Error ? error.message : 'Google sign-in failed.'
-            )
-          } finally {
-            setIsSigningIn(false)
-          }
-        },
-      })
-
-      setIsLoadingScript(false)
-    }
-
-    const existingScript = document.getElementById(GOOGLE_SCRIPT_ID)
-
-    if (existingScript) {
-      if (window.google) {
-        initializeClient()
-      } else {
-        existingScript.addEventListener('load', initializeClient, {
-          once: true,
-        })
-      }
-
-      return () => {
-        isCancelled = true
-      }
-    }
-
-    const script = document.createElement('script')
-    script.id = GOOGLE_SCRIPT_ID
-    script.src = GOOGLE_SCRIPT_SRC
-    script.async = true
-    script.defer = true
-    script.onload = () => {
-      if (!isCancelled) {
-        initializeClient()
-      }
-    }
-    script.onerror = () => {
-      if (!isCancelled) {
-        setIsLoadingScript(false)
-        setErrorMessage('Failed to load Google sign-in.')
-      }
-    }
-
-    document.head.append(script)
-    setIsLoadingScript(true)
-
-    return () => {
-      isCancelled = true
-      script.onload = null
-      script.onerror = null
-    }
-  }, [clientId])
+        try {
+          await onSignInRef.current(response.access_token)
+          setErrorMessage(null)
+        } catch (error) {
+          setErrorMessage(
+            error instanceof Error ? error.message : 'Google sign-in failed.'
+          )
+        } finally {
+          setIsSigningIn(false)
+        }
+      },
+    })
+  }, [clientId, isScriptReady])
 
   const handleGoogleSignIn = () => {
     setErrorMessage(null)
