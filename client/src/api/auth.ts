@@ -64,6 +64,13 @@ export async function loginWithGoogle(params: {
   return postAuthRequest<AuthResponse>('google', params)
 }
 
+export async function loginWithFacebook(params: {
+  code: string
+  redirectUri: string
+}): Promise<AuthResponse> {
+  return postAuthRequest<AuthResponse>('facebook', params)
+}
+
 export async function registerWithCredentials(params: {
   displayName: string
   email: string

@@ -7,6 +7,7 @@ import { NavLink, Route, Routes } from 'react-router'
 import {
   getCurrentUser,
   loginWithCredentials,
+  loginWithFacebook,
   loginWithGoogle,
   logoutWithSessionToken,
   mapApiUserToProfile,
@@ -14,6 +15,7 @@ import {
 } from './api/auth'
 import { getHealthStatus } from './api/health'
 import styles from './App.module.css'
+import { FacebookCallbackPage } from './pages/auth/FacebookCallbackPage'
 import { HomePage } from './pages/home/HomePage'
 import { LoginPage } from './pages/login/LoginPage'
 import { RegistrationPage } from './pages/login/RegistrationPage'
@@ -113,6 +115,17 @@ const App = () => {
 
   const signInWithGoogle = async (accessToken: string) => {
     const authResponse = await loginWithGoogle({ accessToken })
+
+    window.localStorage.setItem(
+      SESSION_TOKEN_STORAGE_KEY,
+      authResponse.sessionToken
+    )
+    setUser(mapApiUserToProfile(authResponse.user))
+  }
+
+  const signInWithFacebook = async (code: string) => {
+    const redirectUri = `${window.location.origin}/auth/facebook/callback`
+    const authResponse = await loginWithFacebook({ code, redirectUri })
 
     window.localStorage.setItem(
       SESSION_TOKEN_STORAGE_KEY,
@@ -253,9 +266,14 @@ const App = () => {
                   user={user}
                   onSignIn={signInWithCredentials}
                   onGoogleSignIn={signInWithGoogle}
+                  onFacebookSignIn={signInWithFacebook}
                   onProviderSignIn={signInWithProvider}
                 />
               }
+            />
+            <Route
+              path="/auth/facebook/callback"
+              element={<FacebookCallbackPage />}
             />
             <Route
               path="/register"

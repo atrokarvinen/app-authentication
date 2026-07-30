@@ -12,5 +12,7 @@ export const env = {
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   logLevel: process.env.LOG_LEVEL || 'info',
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  facebookAppId: process.env.FACEBOOK_APP_ID || '',
+  facebookAppSecret: process.env.FACEBOOK_APP_SECRET || '',
   databaseUrl: process.env.DATABASE_URL || '',
 }

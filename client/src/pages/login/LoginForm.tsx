@@ -1,9 +1,9 @@
-import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded'
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined'
 import MicrosoftIcon from '@mui/icons-material/Microsoft'
 import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
+import { FacebookSignInButton } from '../../components/auth/FacebookSignInButton'
 import { GoogleSignInButtonReactOAuth } from '../../components/auth/GoogleSignInButton'
 import type { AuthProvider } from '../../types/auth'
 import styles from './LoginForm.module.css'
@@ -11,12 +11,14 @@ import styles from './LoginForm.module.css'
 type LoginFormProps = {
   onSignIn: (email: string, password: string) => Promise<void>
   onGoogleSignIn: (accessToken: string) => Promise<void>
+  onFacebookSignIn: (accessToken: string) => Promise<void>
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
 export const LoginForm = ({
   onSignIn,
   onGoogleSignIn,
+  onFacebookSignIn,
   onProviderSignIn,
 }: LoginFormProps) => {
   const [email, setEmail] = useState('')
@@ -82,14 +84,10 @@ export const LoginForm = ({
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSignIn={onGoogleSignIn}
         />
-        <Button
-          variant="outlined"
-          size="large"
-          startIcon={<FacebookRoundedIcon />}
-          onClick={() => onProviderSignIn('Facebook')}
-        >
-          Sign in with Facebook
-        </Button>
+        <FacebookSignInButton
+          appId={import.meta.env.VITE_FACEBOOK_APP_ID}
+          onSignIn={onFacebookSignIn}
+        />
         <Button
           variant="outlined"
           size="large"

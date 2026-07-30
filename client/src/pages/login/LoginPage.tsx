@@ -9,6 +9,7 @@ type LoginPageProps = {
   user: UserProfile | null
   onSignIn: (email: string, password: string) => Promise<void>
   onGoogleSignIn: (accessToken: string) => Promise<void>
+  onFacebookSignIn: (accessToken: string) => Promise<void>
   onProviderSignIn: (provider: AuthProvider) => void
 }
 
@@ -16,6 +17,7 @@ export const LoginPage = ({
   user,
   onSignIn,
   onGoogleSignIn,
+  onFacebookSignIn,
   onProviderSignIn,
 }: LoginPageProps) => {
   const navigate = useNavigate()
@@ -52,6 +54,20 @@ export const LoginPage = ({
     }
   }
 
+  const handleFacebookSignIn = async (accessToken: string) => {
+    try {
+      await onFacebookSignIn(accessToken)
+      setAuthError(null)
+      navigate('/')
+    } catch (error) {
+      setAuthError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to sign in with Facebook.'
+      )
+    }
+  }
+
   return (
     <Box className={styles.loginPageShell}>
       <Paper elevation={0} className={styles.loginPaper}>
@@ -78,6 +94,7 @@ export const LoginPage = ({
           <LoginForm
             onSignIn={handleSignIn}
             onGoogleSignIn={handleGoogleSignIn}
+            onFacebookSignIn={handleFacebookSignIn}
             onProviderSignIn={handleProviderSignIn}
           />
 

@@ -6,6 +6,7 @@ import { getCurrentUser } from './services/currentUser/currentUserService'
 import type { CurrentUserResponseBody } from './services/currentUser/types'
 import { deleteUser } from './services/delete/deleteService'
 import { AuthServiceError } from './services/errors'
+import { signInWithFacebook } from './services/facebook/facebookService'
 import { signInWithGoogle } from './services/google/googleService'
 import { loginUser } from './services/login/loginService'
 import { logoutUser } from './services/logout/logoutService'
@@ -77,6 +78,31 @@ authRouter.post('/google', async (request, response) => {
 
     response.json(result)
     log.info(logMeta, 'auth.google.success')
+  } catch (error) {
+    if (error instanceof AuthServiceError) {
+      log.warn(error.logMeta, error.logEvent)
+      response
+        .status(error.statusCode)
+        .json({ error: error.message } as ErrorResponse)
+      return
+    }
+
+    throw error
+  }
+})
+
+authRouter.post('/facebook', async (request, response) => {
+  const log = getLogger(request)
+
+  try {
+    const { result, logMeta } = await signInWithFacebook({
+      body: request.body,
+      ipAddress: request.ip || null,
+      userAgent: request.get('user-agent') || null,
+    })
+
+    response.json(result)
+    log.info(logMeta, 'auth.facebook.success')
   } catch (error) {
     if (error instanceof AuthServiceError) {
       log.warn(error.logMeta, error.logEvent)
