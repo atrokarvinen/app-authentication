@@ -6,7 +6,7 @@ import {
 import { SystemClock, type IClock } from '../../../../lib/clock'
 import { normalizeEmail, toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
-import { PrismaLoginRepository, type ILoginRepository } from './loginRepository'
+import { LoginRepository, type ILoginRepository } from './loginRepository'
 import type { LoginArgs, LoginResult } from './types'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
@@ -102,7 +102,7 @@ export class LoginService {
 }
 
 const loginService = new LoginService(
-  new PrismaLoginRepository(),
+  new LoginRepository(),
   new AuthCryptoHelper(),
   new SystemClock()
 )

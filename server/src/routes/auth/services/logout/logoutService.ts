@@ -4,10 +4,7 @@ import {
 } from '../../../../lib/authCryptoHelper'
 import { SystemClock, type IClock } from '../../../../lib/clock'
 import { AuthServiceError } from '../errors'
-import {
-  PrismaLogoutRepository,
-  type ILogoutRepository,
-} from './logoutRepository'
+import { LogoutRepository, type ILogoutRepository } from './logoutRepository'
 import type { LogoutArgs, LogoutResult } from './types'
 
 export class LogoutService {
@@ -37,7 +34,7 @@ export class LogoutService {
 }
 
 const logoutService = new LogoutService(
-  new PrismaLogoutRepository(),
+  new LogoutRepository(),
   new AuthCryptoHelper(),
   new SystemClock()
 )

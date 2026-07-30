@@ -1,6 +1,8 @@
 import { Router } from 'express'
+import { env } from '../../config/env'
 import { getLogger } from '../../lib/logging/httpLogger'
 import { getSessionTokenFromRequest } from './services/authShared'
+import { deleteUser } from './services/delete/deleteService'
 import { AuthServiceError } from './services/errors'
 import { loginUser } from './services/login/loginService'
 import { logoutUser } from './services/logout/logoutService'
@@ -105,5 +107,38 @@ authRouter.get('/me', async (request, response) => {
     throw error
   }
 })
+
+if (env.nodeEnv === 'development') {
+  authRouter.delete('/dev/users', async (request, response) => {
+    const log = getLogger(request)
+    const email = request.query.email as string | undefined
+
+    log.info("deleteUser route called with email: '%s'", email)
+
+    if (!email) {
+      response
+        .status(400)
+        .json({ error: 'email query parameter is required.' } as ErrorResponse)
+      return
+    }
+
+    try {
+      const { logMeta, deleted } = await deleteUser({ email })
+
+      response.json({ deleted })
+      log.info(logMeta, 'auth.dev.delete_user.success')
+    } catch (error) {
+      if (error instanceof AuthServiceError) {
+        log.warn(error.logMeta, error.logEvent)
+        response
+          .status(error.statusCode)
+          .json({ error: error.message } as ErrorResponse)
+        return
+      }
+
+      throw error
+    }
+  })
+}
 
 export { authRouter }

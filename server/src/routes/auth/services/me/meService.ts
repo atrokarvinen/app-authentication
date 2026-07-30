@@ -6,7 +6,7 @@ import {
 import { SystemClock, type IClock } from '../../../../lib/clock'
 import { toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
-import { PrismaMeRepository, type IMeRepository } from './meRepository'
+import { MeRepository, type IMeRepository } from './meRepository'
 import type { MeArgs, MeResult } from './types'
 
 export class MeService {
@@ -56,7 +56,7 @@ export class MeService {
 }
 
 const meService = new MeService(
-  new PrismaMeRepository(),
+  new MeRepository(),
   new AuthCryptoHelper(),
   new SystemClock()
 )

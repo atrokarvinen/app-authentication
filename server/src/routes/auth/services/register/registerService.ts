@@ -7,7 +7,7 @@ import { SystemClock, type IClock } from '../../../../lib/clock'
 import { normalizeEmail, toUserDto } from '../authShared'
 import { AuthServiceError } from '../errors'
 import {
-  PrismaRegisterRepository,
+  RegisterRepository,
   type IRegisterRepository,
 } from './registerRepository'
 import type { RegisterArgs, RegisterResult } from './types'
@@ -91,7 +91,7 @@ export class RegisterService {
 }
 
 const registerService = new RegisterService(
-  new PrismaRegisterRepository(),
+  new RegisterRepository(),
   new AuthCryptoHelper(),
   new SystemClock()
 )

@@ -9,7 +9,7 @@ export interface ILogoutRepository {
   ): Promise<number>
 }
 
-export class PrismaLogoutRepository implements ILogoutRepository {
+export class LogoutRepository implements ILogoutRepository {
   constructor(private readonly prismaClient: PrismaClient = prisma) {}
 
   async revokeSessionByHash(

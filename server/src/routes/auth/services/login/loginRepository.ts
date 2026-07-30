@@ -24,7 +24,7 @@ export interface ILoginRepository {
   persistSuccessfulLogin(params: PersistSuccessfulLoginArgs): Promise<void>
 }
 
-export class PrismaLoginRepository implements ILoginRepository {
+export class LoginRepository implements ILoginRepository {
   constructor(private readonly prismaClient: PrismaClient = prisma) {}
 
   async findEmailRecord(email: string): Promise<LoginEmailRecord> {

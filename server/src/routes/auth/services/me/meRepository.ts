@@ -14,7 +14,7 @@ export interface IMeRepository {
   ): Promise<ActiveSessionRecord>
 }
 
-export class PrismaMeRepository implements IMeRepository {
+export class MeRepository implements IMeRepository {
   constructor(private readonly prismaClient: PrismaClient = prisma) {}
 
   async findActiveSessionByTokenHash(

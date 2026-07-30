@@ -19,7 +19,7 @@ export interface IRegisterRepository {
   createRegisteredUser(params: CreateRegisteredUserArgs): Promise<DbUserProfile>
 }
 
-export class PrismaRegisterRepository implements IRegisterRepository {
+export class RegisterRepository implements IRegisterRepository {
   constructor(private readonly prismaClient: PrismaClient = prisma) {}
 
   async emailExists(email: string): Promise<boolean> {
