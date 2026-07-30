@@ -3,6 +3,12 @@ import type { FacebookUserInfoResponse } from './types'
 
 type CodeExchangeResponse = {
   access_token?: string
+  error?: {
+    message?: string
+    type?: string
+    code?: number
+    fbtrace_id?: string
+  }
 }
 
 export async function exchangeFacebookCode(params: {
@@ -11,29 +17,32 @@ export async function exchangeFacebookCode(params: {
   appId: string
   appSecret: string
 }): Promise<string> {
-  const url = new URL('https://graph.facebook.com/v21.0/oauth/access_token')
-  url.searchParams.set('client_id', params.appId)
-  url.searchParams.set('redirect_uri', params.redirectUri)
-  url.searchParams.set('client_secret', params.appSecret)
-  url.searchParams.set('code', params.code)
+  // POST with form body is the official Facebook recommendation for code exchange
+  const body = new URLSearchParams({
+    client_id: params.appId,
+    redirect_uri: params.redirectUri,
+    client_secret: params.appSecret,
+    code: params.code,
+  })
 
-  const response = await fetch(url)
+  const response = await fetch(
+    'https://graph.facebook.com/v21.0/oauth/access_token',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString(),
+    }
+  )
+  const data = (await response
+    .json()
+    .catch(() => null)) as CodeExchangeResponse | null
 
-  if (!response.ok) {
+  if (!response.ok || !data?.access_token) {
     throw new AuthServiceError(
       'Facebook sign-in could not be completed.',
       401,
-      'auth.facebook.code_exchange_failed'
-    )
-  }
-
-  const data = (await response.json()) as CodeExchangeResponse
-
-  if (!data.access_token) {
-    throw new AuthServiceError(
-      'Facebook sign-in did not return an access token.',
-      401,
-      'auth.facebook.invalid_token_response'
+      'auth.facebook.code_exchange_failed',
+      { facebookError: data?.error, httpStatus: response.status }
     )
   }
 

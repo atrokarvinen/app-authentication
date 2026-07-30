@@ -1,23 +1,38 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+import { loginWithFacebook } from '../../api/auth'
 
 // This page is loaded inside the Facebook OAuth popup.
 // It reads the code/state from the URL and posts them to the opener, then closes.
 export const FacebookCallbackPage = () => {
+  const login = useCallback(async (code: string, state: string | null) => {
+    try {
+      const redirectUri = `${window.location.origin}/auth/facebook/callback`
+      const authResponse = await loginWithFacebook({ code, redirectUri })
+
+      window.localStorage.setItem(
+        'app_auth_session_token',
+        authResponse.sessionToken
+      )
+    } catch (error) {
+      console.error('Error during Facebook login:', error)
+    }
+  }, [])
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
 
-    window.opener?.postMessage(
-      {
-        type: 'facebook-oauth-callback',
-        code: params.get('code') ?? undefined,
-        state: params.get('state') ?? undefined,
-        error: params.get('error') ?? undefined,
-      },
-      window.location.origin
+    const code = params.get('code')
+    const state = params.get('state')
+    const error = params.get('error')
+
+    console.log(
+      `Facebook OAuth callback received. code=${code}, state=${state}, error=${error}`
     )
 
-    window.close()
-  }, [])
+    login(code ?? '', state).finally(() => {
+      window.close()
+    })
+  }, [login])
 
-  return null
+  return <div>Test</div>
 }
