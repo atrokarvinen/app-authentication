@@ -11,7 +11,8 @@ import { theme } from './theme'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID
-const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
+// const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
+const microsoftRedirectUri = window.location.origin
 
 console.log('microsoftClientId', microsoftClientId)
 console.log('microsoftRedirectUri', microsoftRedirectUri)

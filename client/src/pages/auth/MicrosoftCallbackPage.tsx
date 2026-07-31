@@ -32,7 +32,7 @@ export const MicrosoftCallbackPage = () => {
     )
 
     login(code ?? '').finally(() => {
-      window.close()
+      // window.close()
     })
   }, [login])
 
