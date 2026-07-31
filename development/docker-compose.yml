@@ -18,6 +18,15 @@ services:
       timeout: 5s
       retries: 5
 
+  nginx:
+    image: nginx:alpine
+    container_name: app-auth-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: app-auth-pgadmin
