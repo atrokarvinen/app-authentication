@@ -61,7 +61,10 @@ const App = () => {
       </AppBar>
 
       <Box component="main" className={styles.mainContent}>
-        <Container maxWidth="lg">
+        <Container
+          maxWidth="lg"
+          sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+        >
           <AppRoutes />
         </Container>
       </Box>

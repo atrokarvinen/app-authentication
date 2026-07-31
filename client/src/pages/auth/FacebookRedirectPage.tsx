@@ -25,5 +25,16 @@ export const FacebookRedirectPage = () => {
     login(code ?? '')
   }, [login])
 
-  return <CircularProgress />
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+      }}
+    >
+      <CircularProgress />
+    </div>
+  )
 }

@@ -1,5 +1,7 @@
 .appRoot {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .appBar {
@@ -19,6 +21,9 @@
 
 .mainContent {
   padding-block: 32px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 @media (min-width: 900px) {
