@@ -2,6 +2,7 @@ import { useMsal } from '@azure/msal-react'
 import MicrosoftIcon from '@mui/icons-material/Microsoft'
 import { Button, Stack, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+import { MICROSOFT_REDIRECT_URI } from './constants'
 
 type Props = {
   clientId?: string
@@ -9,7 +10,6 @@ type Props = {
 }
 
 const GRAPH_SCOPES = ['openid', 'profile', 'email', 'User.Read']
-const MICROSOFT_REDIRECT_URI = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
 
 export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
   const onSignInRef = useRef(onSignIn)

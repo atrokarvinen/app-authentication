@@ -23,12 +23,14 @@ function parseErrorMessage(payload: unknown, fallback: string): string {
   return fallback
 }
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL ?? ''
+
 async function postAuthRequest<TResponse>(
   path: string,
   body: unknown,
   sessionToken?: string
 ): Promise<TResponse> {
-  const response = await fetch(`/api/auth/${path}`, {
+  const response = await fetch(`${backendUrl}/api/auth/${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

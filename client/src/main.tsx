@@ -6,12 +6,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import App from './App.tsx'
+import { MICROSOFT_REDIRECT_URI } from './components/auth/constants.ts'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { theme } from './theme'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID
-const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
+const microsoftRedirectUri = MICROSOFT_REDIRECT_URI
 
 const microsoftAuthInstance = new PublicClientApplication({
   auth: {
