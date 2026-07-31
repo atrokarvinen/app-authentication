@@ -18,7 +18,7 @@ const microsoftAuthInstance = new PublicClientApplication({
     authority:
       import.meta.env.VITE_MICROSOFT_AUTHORITY ||
       'https://login.microsoftonline.com/common',
-    redirectUri: window.location.origin,
+    redirectUri: `${window.location.origin}/auth/microsoft/callback`,
   },
   cache: { cacheLocation: 'localStorage' },
 })

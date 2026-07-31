@@ -38,22 +38,34 @@ export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
     setErrorMessage(null)
 
     try {
-      const authResult = await instance.loginPopup({
-        scopes: GRAPH_SCOPES,
-        prompt: 'select_account',
-      })
+      console.log('Microsoft sign-in initiated. Requesting access token...')
 
-      if (!authResult.accessToken) {
-        throw new Error('Microsoft sign-in did not return an access token.')
-      }
+      // const authResult = await instance.loginPopup({
+      //   scopes: GRAPH_SCOPES,
+      //   prompt: 'select_account',
+      //   redirectUri: `${window.location.origin}/auth/microsoft/callback`,
+      // })
+      const authResult = await instance.loginRedirect()
 
-      await onSignInRef.current(authResult.accessToken)
+      // console.log(
+      //   'Microsoft sign-in successful. Access token received:',
+      //   authResult.accessToken
+      // )
+
+      // if (!authResult.accessToken) {
+      //   throw new Error('Microsoft sign-in did not return an access token.')
+      // }
+
+      // await onSignInRef.current(authResult.accessToken)
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Microsoft sign-in failed.'
       )
     } finally {
       setIsSigningIn(false)
+      console.log(
+        'Microsoft sign-in process completed. isSigningIn set to false.'
+      )
     }
   }
 
