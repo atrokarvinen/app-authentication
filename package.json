@@ -1,28 +1,18 @@
 {
   "name": "app-authentication",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace client\" \"npm run dev --workspace server\"",
-    "dev:client": "npm run dev --workspace client",
-    "dev:server": "npm run dev --workspace server",
-    "build": "npm run build --workspace client && npm run build --workspace server",
-    "lint": "npm run lint --workspace client && npm run lint --workspace server",
-    "unused-exports": "npm run unused-exports --workspace client && npm run unused-exports --workspace server",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "lint": "npm run lint --prefix client && npm run lint --prefix server",
+    "unused-exports": "npm run unused-exports --prefix client && npm run unused-exports --prefix server",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "prettier": "^3.6.2"
-  },
-  "allowScripts": {
-    "esbuild": true,
-    "@prisma/client@6.19.3": true,
-    "@prisma/engines@7.9.1": true,
-    "prisma@7.9.1": true
   }
 }
