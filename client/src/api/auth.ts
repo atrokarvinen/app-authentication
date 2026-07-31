@@ -100,10 +100,9 @@ export async function logoutWithSessionToken(
 export async function getCurrentUser(
   sessionToken: string
 ): Promise<AuthUserResponse | null> {
-  const response = await fetch('/api/auth/me', {
-    headers: {
-      Authorization: `Bearer ${sessionToken}`,
-    },
+  const url = `${backendUrl}/api/auth/me`
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${sessionToken}` },
   })
 
   if (response.status === 401) {
