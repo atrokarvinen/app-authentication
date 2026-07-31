@@ -6,7 +6,7 @@ export type FacebookIdentityServices = {
   init: (config: { appId: string; version: string; xfbml: boolean }) => void
 }
 
-export type FacebookLoginResponse = {
+type FacebookLoginResponse = {
   authResponse?: {
     accessToken: string
     expiresIn: number
@@ -16,6 +16,6 @@ export type FacebookLoginResponse = {
   status: 'connected' | 'not_authorized' | 'unknown'
 }
 
-export type LoginConfig = {
+type LoginConfig = {
   scope: string
 }

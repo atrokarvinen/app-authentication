@@ -13,7 +13,7 @@ const MICROSOFT_REDIRECT_URI = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
 
 export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
   const onSignInRef = useRef(onSignIn)
-  const { instance, accounts } = useMsal()
+  const { instance } = useMsal()
   const [isSigningIn, setIsSigningIn] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 

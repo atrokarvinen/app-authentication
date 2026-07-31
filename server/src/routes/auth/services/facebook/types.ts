@@ -21,14 +21,6 @@ type FacebookSignInResponseBody = {
   sessionToken: string
 }
 
-export type FacebookTokenDebugResponse = {
-  data?: {
-    app_id?: string
-    is_valid?: boolean
-    user_id?: string
-  }
-}
-
 export type FacebookUserInfoResponse = {
   id?: string
   name?: string
