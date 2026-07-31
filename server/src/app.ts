@@ -14,3 +14,5 @@ app.use(express.json())
 
 app.use('/api/health', healthRouter)
 app.use('/api/auth', authRouter)
+
+export default app
