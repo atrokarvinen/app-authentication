@@ -3,5 +3,6 @@ todo.txt
 
 node_modules
 dist
+certs
 
 server/.env
