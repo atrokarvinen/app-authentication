@@ -2,7 +2,6 @@ import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded'
 import { Button, Stack, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 
-const CALLBACK_PATH = '/auth/facebook/callback'
 const POPUP_FEATURES = 'width=600,height=700,left=400,top=100'
 
 type FacebookOAuthMessage = {
@@ -32,7 +31,7 @@ export const FacebookSignInButton = ({ appId, onSignIn }: Props) => {
 
   const handleClick = () => {
     const state = crypto.randomUUID()
-    const redirectUri = `${window.location.origin}${CALLBACK_PATH}`
+    const redirectUri = import.meta.env.VITE_FACEBOOK_REDIRECT_URI
 
     const authUrl = new URL('https://www.facebook.com/v21.0/dialog/oauth')
     authUrl.searchParams.set('client_id', appId)

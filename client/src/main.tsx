@@ -11,18 +11,12 @@ import { theme } from './theme'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID
-// const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
-const microsoftRedirectUri = window.location.origin
-
-console.log('microsoftClientId', microsoftClientId)
-console.log('microsoftRedirectUri', microsoftRedirectUri)
+const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
 
 const microsoftAuthInstance = new PublicClientApplication({
   auth: {
     clientId: microsoftClientId || '00000000-0000-0000-0000-000000000000',
-    authority:
-      import.meta.env.VITE_MICROSOFT_AUTHORITY ||
-      'https://login.microsoftonline.com/common',
+    authority: import.meta.env.VITE_MICROSOFT_AUTHORITY,
     redirectUri: microsoftRedirectUri,
   },
   cache: { cacheLocation: 'localStorage' },

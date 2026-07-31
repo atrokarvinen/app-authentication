@@ -63,7 +63,7 @@ export const FacebookSignInButtonAlt = ({ appId, onSignIn }: Props) => {
   return (
     <Stack spacing={0.5}>
       <a
-        href={`https://www.facebook.com/v26.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(window.location.origin + '/auth/facebook/callback')}&state=test`}
+        href={`https://www.facebook.com/v26.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_FACEBOOK_REDIRECT_URI)}&state=test`}
         style={{ textDecoration: 'none' }}
       >
         Login with Facebook

@@ -1,10 +1,9 @@
+import { CircularProgress } from '@mui/material'
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
 
-// This page is loaded inside the Facebook OAuth popup.
-// It reads the code/state from the URL and posts them to the opener, then closes.
-export const FacebookCallbackPage = () => {
+export const FacebookRedirectPage = () => {
   const navigate = useNavigate()
   const { signInWithFacebook } = useAuth()
 
@@ -22,19 +21,9 @@ export const FacebookCallbackPage = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-
     const code = params.get('code')
-    const state = params.get('state')
-    const error = params.get('error')
-
-    console.log(
-      `Facebook OAuth callback received. code=${code}, state=${state}, error=${error}`
-    )
-
-    login(code ?? '').finally(() => {
-      window.close()
-    })
+    login(code ?? '')
   }, [login])
 
-  return <div>Test</div>
+  return <CircularProgress />
 }
