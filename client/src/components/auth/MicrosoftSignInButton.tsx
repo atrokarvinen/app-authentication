@@ -9,6 +9,7 @@ type Props = {
 }
 
 const GRAPH_SCOPES = ['openid', 'profile', 'email', 'User.Read']
+const MICROSOFT_POPUP_REDIRECT_URI = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
 
 export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
   const onSignInRef = useRef(onSignIn)
@@ -33,39 +34,52 @@ export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
     )
   }
 
-  const handleSignIn = async () => {
+  const handleSignInRedirect = async () => {
     setIsSigningIn(true)
     setErrorMessage(null)
 
     try {
-      console.log('Microsoft sign-in initiated. Requesting access token...')
-
-      // const authResult = await instance.loginPopup({
+      await instance.acquireTokenRedirect({
+        redirectUri: MICROSOFT_POPUP_REDIRECT_URI,
+        scopes: GRAPH_SCOPES,
+      })
+      // await instance.loginRedirect({
+      //   redirectUri: MICROSOFT_POPUP_REDIRECT_URI,
       //   scopes: GRAPH_SCOPES,
-      //   prompt: 'select_account',
-      //   redirectUri: `${window.location.origin}/auth/microsoft/callback`,
       // })
-      const authResult = await instance.loginRedirect()
-
-      // console.log(
-      //   'Microsoft sign-in successful. Access token received:',
-      //   authResult.accessToken
-      // )
-
-      // if (!authResult.accessToken) {
-      //   throw new Error('Microsoft sign-in did not return an access token.')
-      // }
-
-      // await onSignInRef.current(authResult.accessToken)
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Microsoft sign-in failed.'
       )
     } finally {
       setIsSigningIn(false)
-      console.log(
-        'Microsoft sign-in process completed. isSigningIn set to false.'
+    }
+  }
+
+  const handleSignInPopup = async () => {
+    setIsSigningIn(true)
+    setErrorMessage(null)
+
+    try {
+      const authResult = await instance.acquireTokenPopup({
+        scopes: GRAPH_SCOPES,
+        prompt: 'select_account',
+        redirectUri: MICROSOFT_POPUP_REDIRECT_URI,
+      })
+
+      console.log('Microsoft sign-in successful:', authResult)
+
+      if (!authResult.accessToken) {
+        throw new Error('Microsoft sign-in did not return an access token.')
+      }
+
+      await onSignInRef.current(authResult.accessToken)
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Microsoft sign-in failed.'
       )
+    } finally {
+      setIsSigningIn(false)
     }
   }
 
@@ -75,7 +89,7 @@ export const MicrosoftSignInButton = ({ clientId, onSignIn }: Props) => {
         variant="outlined"
         size="large"
         startIcon={<MicrosoftIcon />}
-        onClick={handleSignIn}
+        onClick={handleSignInPopup}
         disabled={isSigningIn}
         loading={isSigningIn}
       >

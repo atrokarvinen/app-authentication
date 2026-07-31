@@ -11,6 +11,10 @@ import { theme } from './theme'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID
+const microsoftRedirectUri = import.meta.env.VITE_MICROSOFT_REDIRECT_URI
+
+console.log('microsoftClientId', microsoftClientId)
+console.log('microsoftRedirectUri', microsoftRedirectUri)
 
 const microsoftAuthInstance = new PublicClientApplication({
   auth: {
@@ -18,7 +22,7 @@ const microsoftAuthInstance = new PublicClientApplication({
     authority:
       import.meta.env.VITE_MICROSOFT_AUTHORITY ||
       'https://login.microsoftonline.com/common',
-    redirectUri: `${window.location.origin}/auth/microsoft/callback`,
+    redirectUri: microsoftRedirectUri,
   },
   cache: { cacheLocation: 'localStorage' },
 })
