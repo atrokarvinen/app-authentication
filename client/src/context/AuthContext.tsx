@@ -5,6 +5,7 @@ import {
   loginWithCredentials,
   loginWithFacebook,
   loginWithGoogle,
+  loginWithMicrosoft,
   logoutWithSessionToken,
   mapApiUserToProfile,
   registerWithCredentials,
@@ -21,6 +22,7 @@ type AuthContextValue = {
   signInWithCredentials: (email: string, password: string) => Promise<void>
   signInWithGoogle: (accessToken: string) => Promise<void>
   signInWithFacebook: (code: string) => Promise<void>
+  signInWithMicrosoft: (accessToken: string) => Promise<void>
   signInWithProvider: (provider: AuthProviderType) => void
   register: (params: {
     displayName: string
@@ -90,6 +92,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(mapApiUserToProfile(authResponse.user))
   }
 
+  const signInWithMicrosoft = async (accessToken: string) => {
+    const authResponse = await loginWithMicrosoft({ accessToken })
+    storeSession(authResponse.sessionToken)
+    setUser(mapApiUserToProfile(authResponse.user))
+  }
+
   const signInWithProvider = (provider: AuthProviderType) => {
     const providerProfiles: Record<AuthProviderType, UserProfile> = {
       Credentials: {
@@ -149,6 +157,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signInWithCredentials,
       signInWithGoogle,
       signInWithFacebook,
+      signInWithMicrosoft,
       signInWithProvider,
       register,
       signOut,
@@ -162,6 +171,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = (): AuthContextValue => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider')

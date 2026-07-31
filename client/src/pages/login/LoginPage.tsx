@@ -12,7 +12,7 @@ export const LoginPage = () => {
     signInWithCredentials,
     signInWithGoogle,
     signInWithFacebook,
-    signInWithProvider,
+    signInWithMicrosoft,
   } = useAuth()
   const [authError, setAuthError] = useState<string | null>(null)
 
@@ -26,13 +26,6 @@ export const LoginPage = () => {
         error instanceof Error ? error.message : 'Failed to sign in.'
       )
     }
-  }
-
-  const handleProviderSignIn = (
-    provider: Parameters<typeof signInWithProvider>[0]
-  ) => {
-    signInWithProvider(provider)
-    navigate('/')
   }
 
   const handleGoogleSignIn = async (accessToken: string) => {
@@ -59,6 +52,20 @@ export const LoginPage = () => {
         error instanceof Error
           ? error.message
           : 'Failed to sign in with Facebook.'
+      )
+    }
+  }
+
+  const handleMicrosoftSignIn = async (accessToken: string) => {
+    try {
+      await signInWithMicrosoft(accessToken)
+      setAuthError(null)
+      navigate('/')
+    } catch (error) {
+      setAuthError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to sign in with Microsoft.'
       )
     }
   }
@@ -90,7 +97,7 @@ export const LoginPage = () => {
             onSignIn={handleSignIn}
             onGoogleSignIn={handleGoogleSignIn}
             onFacebookSignIn={handleFacebookSignIn}
-            onProviderSignIn={handleProviderSignIn}
+            onMicrosoftSignIn={handleMicrosoftSignIn}
           />
 
           <Typography color="text.secondary">

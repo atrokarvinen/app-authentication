@@ -1,25 +1,24 @@
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined'
-import MicrosoftIcon from '@mui/icons-material/Microsoft'
 import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
 import type { SubmitEvent } from 'react'
 import { useState } from 'react'
 import { FacebookSignInButtonAlt } from '../../components/auth/FacebookSignInButtonAlt'
 import { GoogleSignInButtonReactOAuth } from '../../components/auth/GoogleSignInButton'
-import type { AuthProvider } from '../../types/auth'
+import { MicrosoftSignInButton } from '../../components/auth/MicrosoftSignInButton'
 import styles from './LoginForm.module.css'
 
 type LoginFormProps = {
   onSignIn: (email: string, password: string) => Promise<void>
   onGoogleSignIn: (accessToken: string) => Promise<void>
   onFacebookSignIn: (accessToken: string) => Promise<void>
-  onProviderSignIn: (provider: AuthProvider) => void
+  onMicrosoftSignIn: (accessToken: string) => Promise<void>
 }
 
 export const LoginForm = ({
   onSignIn,
   onGoogleSignIn,
   onFacebookSignIn,
-  onProviderSignIn,
+  onMicrosoftSignIn,
 }: LoginFormProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -88,14 +87,10 @@ export const LoginForm = ({
           appId={import.meta.env.VITE_FACEBOOK_APP_ID}
           onSignIn={onFacebookSignIn}
         />
-        <Button
-          variant="outlined"
-          size="large"
-          startIcon={<MicrosoftIcon />}
-          onClick={() => onProviderSignIn('Microsoft')}
-        >
-          Sign in with Microsoft
-        </Button>
+        <MicrosoftSignInButton
+          clientId={import.meta.env.VITE_MICROSOFT_CLIENT_ID}
+          onSignIn={onMicrosoftSignIn}
+        />
       </Stack>
     </>
   )

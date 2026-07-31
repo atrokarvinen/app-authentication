@@ -11,6 +11,7 @@ import { signInWithGoogle } from './services/google/googleService'
 import { loginUser } from './services/login/loginService'
 import { logoutUser } from './services/logout/logoutService'
 import type { LogoutResponseBody } from './services/logout/types'
+import { signInWithMicrosoft } from './services/microsoft/microsoftService'
 import { registerUser } from './services/register/registerService'
 import type { ErrorResponse } from './types/http'
 
@@ -103,6 +104,31 @@ authRouter.post('/facebook', async (request, response) => {
 
     response.json(result)
     log.info(logMeta, 'auth.facebook.success')
+  } catch (error) {
+    if (error instanceof AuthServiceError) {
+      log.warn(error.logMeta, error.logEvent)
+      response
+        .status(error.statusCode)
+        .json({ error: error.message } as ErrorResponse)
+      return
+    }
+
+    throw error
+  }
+})
+
+authRouter.post('/microsoft', async (request, response) => {
+  const log = getLogger(request)
+
+  try {
+    const { result, logMeta } = await signInWithMicrosoft({
+      body: request.body,
+      ipAddress: request.ip || null,
+      userAgent: request.get('user-agent') || null,
+    })
+
+    response.json(result)
+    log.info(logMeta, 'auth.microsoft.success')
   } catch (error) {
     if (error instanceof AuthServiceError) {
       log.warn(error.logMeta, error.logEvent)

@@ -71,6 +71,12 @@ export async function loginWithFacebook(params: {
   return postAuthRequest<AuthResponse>('facebook', params)
 }
 
+export async function loginWithMicrosoft(params: {
+  accessToken: string
+}): Promise<AuthResponse> {
+  return postAuthRequest<AuthResponse>('microsoft', params)
+}
+
 export async function registerWithCredentials(params: {
   displayName: string
   email: string
