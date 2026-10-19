@@ -1,3 +1,4 @@
+name: app-authentication
 services:
   postgres:
     image: postgres:18-alpine

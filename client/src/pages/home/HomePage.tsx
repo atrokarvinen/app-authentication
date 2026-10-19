@@ -1,6 +1,4 @@
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl'
 import RouteIcon from '@mui/icons-material/Route'
-import TerminalIcon from '@mui/icons-material/Terminal'
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined'
 import {
   Avatar,
@@ -15,50 +13,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router'
-import { getHealthStatus } from '../../api/health'
-import { HealthStatusCard } from '../../components/HealthStatusCard'
 import { useAuth } from '../../context/AuthContext'
-import type { HealthResponse } from '../../types/api'
 import styles from './HomePage.module.css'
 
 export const HomePage = () => {
   const { user, signOut } = useAuth()
-
-  const [health, setHealth] = useState<HealthResponse | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    let isMounted = true
-
-    const loadHealthStatus = async () => {
-      try {
-        const response = await getHealthStatus()
-        if (isMounted) {
-          setHealth(response)
-          setErrorMessage(null)
-        }
-      } catch (error) {
-        if (isMounted) {
-          setErrorMessage(
-            error instanceof Error ? error.message : 'Unknown server error'
-          )
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    void loadHealthStatus()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
 
   return (
     <Stack spacing={3.5}>
@@ -82,33 +42,14 @@ export const HomePage = () => {
               className={styles.summary}
             >
               {user
-                ? 'Your starter profile is active below. Replace this local state with backend-backed authentication when you wire the real auth flow.'
+                ? 'Your starter profile is active below.'
                 : 'No user session is active. Use the login page to test credentials or social sign-in buttons.'}
             </Typography>
           </Box>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-            <Chip icon={<TerminalIcon />} label="npm run dev" />
-            <Chip icon={<ChecklistRtlIcon />} label="npm run build" />
-            <Chip icon={<ChecklistRtlIcon />} label="npm run lint" />
-            <Button component={RouterLink} to="/login" variant="contained">
-              {user ? 'Switch account' : 'Go to login'}
-            </Button>
-            {user ? (
-              <Button variant="text" color="inherit" onClick={signOut}>
-                Sign out
-              </Button>
-            ) : null}
-          </Stack>
         </Stack>
       </Paper>
 
       <Box className={styles.dashboardGrid}>
-        <HealthStatusCard
-          health={health}
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-        />
-
         <Paper elevation={0} className={styles.profilePaper}>
           <Stack spacing={2.5}>
             <Typography variant="h5">Profile</Typography>
@@ -151,15 +92,26 @@ export const HomePage = () => {
                     <ListItemText primary="Role" secondary={user.role} />
                   </ListItem>
                 </List>
+                <div>
+                  <Button variant="contained" color="primary" onClick={signOut}>
+                    Logout
+                  </Button>
+                </div>
               </Stack>
             ) : (
               <Stack spacing={2}>
                 <Typography color="text.secondary">
                   The user is not logged in.
                 </Typography>
-                <Button component={RouterLink} to="/login" variant="contained">
-                  Open login page
-                </Button>
+                <div>
+                  <Button
+                    component={RouterLink}
+                    to="/login"
+                    variant="contained"
+                  >
+                    Open login page
+                  </Button>
+                </div>
               </Stack>
             )}
           </Stack>

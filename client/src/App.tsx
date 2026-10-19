@@ -31,7 +31,7 @@ const App = () => {
                 clickable
                 component={NavLink}
                 to="/"
-                icon={<CottageOutlinedIcon />}
+                icon={<CottageOutlinedIcon color="action" />}
                 label="Home"
                 variant="outlined"
                 sx={{
@@ -45,7 +45,7 @@ const App = () => {
                 clickable
                 component={NavLink}
                 to="/login"
-                icon={<LoginOutlinedIcon />}
+                icon={<LoginOutlinedIcon color="action" />}
                 label={user ? 'Switch account' : 'Login'}
                 variant="outlined"
                 sx={{
