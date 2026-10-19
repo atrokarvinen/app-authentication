@@ -32,6 +32,23 @@ The home page shows the authenticated profile, provider, role, and logout action
 
 ![Home page after login](docs/screenshots/home-page-after-login.png)
 
+## Database Setup
+
+Start the PostgreSQL service from the repository root:
+
+```sh
+docker compose -f development/docker-compose.yml up -d postgres
+```
+
+If `server/.env` does not exist, create it from `server/.env.example`. The example configures Prisma to connect to the local Compose database. Then apply the committed migrations:
+
+```sh
+cd server
+npm run prisma:migrate:deploy
+```
+
+To inspect the database in Prisma Studio, run `npm run prisma:studio` from `server`. Stop PostgreSQL with `docker compose -f development/docker-compose.yml down` from the repository root. The database data is kept in the `postgres_data` Docker volume.
+
 ## Run Locally
 
 Install dependencies in the repository root and in both `client` and `server`, then start the client and API together from the repository root:
