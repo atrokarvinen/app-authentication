@@ -67,7 +67,7 @@ const GoogleSignInButtonReactOAuthInner = ({ onSignIn }: InnerProps) => {
         disabled={isSigningIn}
         loading={isSigningIn}
       >
-        Sign in with Google (react-oauth/google)
+        Sign in with Google
       </Button>
       {errorMessage ? (
         <Typography variant="caption" color="error">
